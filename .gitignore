@@ -1,0 +1,7 @@
+gh_token.txt
+*.token
+_src.zip
+nodus.html
+.DS_Store
+Thumbs.db
+_to_delete/
