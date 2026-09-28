@@ -111,7 +111,7 @@ canvas{display:block}
 .rec.off{background:var(--void)}
 
 /* ------------------------------------------------------------------ mirrors */
-.mirrors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding-block:24px 0}
+.mirrors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .mirror{display:grid;gap:4px;padding:18px 18px 16px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);background:var(--void);min-width:0;position:relative}
 .mirror::after{content:"";position:absolute;right:10px;top:10px;width:8px;height:8px;background:var(--ichor)}
 .mirror .m-n{font-family:var(--px);font-size:32px;line-height:40px;-webkit-font-smoothing:none}
@@ -119,11 +119,12 @@ canvas{display:block}
 @media (hover:hover){.mirror:hover{background:var(--signal);color:var(--void)}.mirror:hover .m-h{color:var(--void)}.mirror:hover::after{background:var(--void)}}
 .mirror:active{background:var(--signal);color:var(--void)}
 @media (max-width:899px){.mirrors{grid-template-columns:1fr 1fr}.mirror .m-n{font-size:24px;line-height:32px}}
-@media (max-width:600px){.mirrors{grid-template-columns:1fr;gap:10px;padding-top:16px}.mirror{padding:12px 14px 10px;gap:0}}
+@media (max-width:600px){.mirrors{grid-template-columns:1fr;gap:10px}.mirror{padding:12px 14px 10px;gap:0}}
 
 /* ------------------------------------------------------------------ home */
 .home-sec{padding-top:72px}
-@media (max-width:759px){.home-sec{padding-top:52px}}
+.home-sec.first{padding-top:44px}
+@media (max-width:759px){.home-sec{padding-top:52px}.home-sec.first{padding-top:32px}}
 .kick{margin:0 0 16px;color:var(--signal)}
 .doors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .door{display:grid;grid-template-rows:auto auto 1fr auto;gap:6px;padding:18px 18px 16px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);background:var(--void);min-width:0;position:relative}
@@ -311,7 +312,24 @@ details.card > .pop .pop-head{display:none}
 #mzFull[aria-pressed="true"]{border-color:var(--ichor);color:var(--ichor)}
 @media (max-width:880px){.map-top .map-name{display:none}}
 @media (max-width:560px){
-  .map-top #mzFull{margin-left:auto}
+  .map-shell:not(.full) .map-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+  .map-shell:not(.full) .map-top .layer{grid-column:1;grid-row:1}
+  .map-shell:not(.full) .map-top .btn{justify-content:center;padding-inline:10px}
+  .map-shell:not(.full) .map-top .layer .btn{flex:1 1 auto}
+  .map-shell:not(.full) .map-top #mapKey{grid-column:2;grid-row:1}
+  .map-shell:not(.full) .map-top .map-zoom{grid-column:1;grid-row:2;margin:0}
+  .map-shell:not(.full) .map-top .map-zoom .mz{flex:1 1 0}
+  .map-shell:not(.full) .map-top #mzFull{grid-column:2;grid-row:2;margin:0}
+}
+@media (max-width:389px){
+  .map-shell:not(.full) .map-top .btn{padding-inline:4px}
+}
+@media (max-width:349px){
+  .map-shell:not(.full) .map-top{grid-template-columns:1fr 1fr}
+  .map-shell:not(.full) .map-top .layer{grid-column:1 / 3}
+  .map-shell:not(.full) .map-top #mapKey{grid-column:1;grid-row:2}
+  .map-shell:not(.full) .map-top #mzFull{grid-column:2;grid-row:2}
+  .map-shell:not(.full) .map-top .map-zoom{grid-column:1 / 3;grid-row:3}
   .map-shell.full .map-main{position:relative}
   .map-shell.full .map-zoom{position:absolute;z-index:2;right:calc(var(--gut) + 12px);bottom:20px;flex-direction:column;margin:0}
   .map-shell.full .mz + .mz{margin-left:0;margin-top:-2px}
@@ -534,15 +552,12 @@ table.annals td:first-child{font-family:var(--px);font-size:16px;color:var(--ich
 .term[open]{flex-basis:100%}
 
 /* ------------------------------------------------------------------ footer */
-.foot{margin-top:112px;padding-block:52px 64px;position:relative}
+.foot{margin-top:96px;padding-block:20px 28px;position:relative}
 .foot::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--dots-s);background-size:4px 2px}
-.foot-grid{display:grid;gap:28px}
-@media (min-width:980px){.foot-grid{grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:56px}}
-.foot .big{font-family:var(--px);font-size:32px;line-height:40px;color:var(--ichor);margin:0 0 12px;-webkit-font-smoothing:none}
-.foot-sub{margin:0;color:var(--signal)}
-.note-rec{color:var(--signal);max-width:62ch;margin-top:20px}
-.note-rec p{margin:0 0 12px}
-.note-rec .sig{font-family:var(--px);font-size:16px;-webkit-font-smoothing:none}
+.foot-l{margin:0;color:var(--signal)}
+@media (max-width:759px){.foot{margin-top:72px;padding-block:16px 24px}}
+.note-rec p{margin:0 0 10px}
+.note-rec .sig{margin:4px 0 0;font-family:var(--px);font-size:16px;line-height:24px;font-style:normal;color:var(--signal);-webkit-font-smoothing:none}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
@@ -653,3 +668,17 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
 .por canvas{width:160px;height:160px}
 @media (max-width:560px){.por canvas{width:80px;height:80px}}
 .pop-vis.por canvas{width:320px;height:320px;max-width:100%;height:auto;aspect-ratio:1}
+
+/* on a phone each row of a reading table becomes a block: the time on top, then what is on screen, then the note */
+@media (max-width:700px){
+  .tbl{overflow:visible}
+  table.beats,table.annals,.tbl table.annals{display:block;min-width:0;width:auto}
+  table.beats thead,table.annals thead{display:none}
+  table.beats tbody,table.annals tbody{display:block}
+  table.beats tr,table.annals tr{display:block;padding:14px 0 16px;background-image:var(--dots-s);background-size:4px 2px;background-repeat:repeat-x;background-position:0 100%}
+  table.beats td,table.annals td{display:block;padding:0;background:none}
+  table.beats td:first-child,table.annals td:first-child{white-space:normal;margin-bottom:10px}
+  table.beats td + td,table.annals td + td{margin-top:10px}
+  table.beats td[data-l]::before,table.annals td[data-l]::before{content:attr(data-l);display:block;font-family:var(--px);font-size:16px;line-height:24px;font-style:normal;text-transform:uppercase;color:var(--signal);-webkit-font-smoothing:none;margin-bottom:2px}
+  .tc{white-space:normal;text-align:left;overflow-wrap:anywhere}
+}

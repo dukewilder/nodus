@@ -109,6 +109,14 @@ function textMask(str, scale, track) {
 }
 
 /* ------------------------------------------------------------------ hero */
+// The hero is the channel banner in motion, drawn at whole device pixels: the name and the SEAM RECOVERY line
+// outlined over the skyline. Phones get it larger, cropped to the middle of the city with the whole line in
+// view; wider screens get the city across. The bottom rows dither away into the page.
+const HERO = {
+  narrow: vw => vw < 600,
+  k(vw, dpr) { return this.narrow(vw) ? Math.max(1, Math.floor(dpr * vw / 175)) : Math.max(1, Math.ceil(vw * dpr / 320)); },
+  rows(vw, vh, dpr, k) { return Math.min(this.narrow(vw) ? 164 : 180, Math.max(124, Math.floor((this.narrow(vw) ? 0.62 : 0.74) * vh * dpr / k))); },
+};
 async function initHero() {
   const cv = $('#heroCv'); if (!cv) return;
   const base = await indicesOf(ASSETS.hero);
@@ -117,20 +125,21 @@ async function initHero() {
   const off = document.createElement('canvas'); off.width = W; off.height = H;
   const octx = off.getContext('2d');
   const img = octx.createImageData(W, H);
+  // the lettering, as on the banner: palette index + 1 for the ink, and a one pixel void outline around it
+  const card = new Uint8Array(W * H);
   const title = textMask('NODUS', 3, 1), sub = textMask('SEAM RECOVERY // READ ONLY', 1, 1);
-  const place = (t, cy) => ({ x0: Math.floor((W - t.w) / 2), y0: cy, t });
-  const texts = [[place(title, 76), 1], [place(sub, 103), 2]];
-  const outline = new Uint8Array(W * H), ink = new Uint8Array(W * H);
-  for (const [p, color] of texts) {
-    for (let y = 0; y < p.t.h; y++) for (let x = 0; x < p.t.w; x++) if (p.t.m[y * p.t.w + x]) {
-      const X = p.x0 + x, Y = p.y0 + y;
-      ink[Y * W + X] = color + 1;
+  for (const [t, y0, color] of [[title, 76, 1], [sub, 103, 2]]) {
+    const x0 = Math.floor((W - t.w) / 2);
+    for (let y = 0; y < t.h; y++) for (let x = 0; x < t.w; x++) if (t.m[y * t.w + x]) {
       for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
-        const XX = X + dx, YY = Y + dy;
-        if (XX >= 0 && XX < W && YY >= 0 && YY < H) outline[YY * W + XX] = 1;
+        const X = x0 + x + dx, Y = y0 + y + dy;
+        if (X >= 0 && X < W && Y >= 0 && Y < H && !card[Y * W + X]) card[Y * W + X] = 1;
       }
     }
+    for (let y = 0; y < t.h; y++) for (let x = 0; x < t.w; x++) if (t.m[y * t.w + x]) card[(y0 + y) * W + x0 + x] = color + 1;
   }
+  const B4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+  const FADE = 7;
   const drops = [];
   const spawn = init => ({ x: Math.floor(Math.random() * W), y: init ? Math.random() * 124 : 116 + Math.random() * 14, v: 12 + Math.random() * 30, len: 2 + Math.floor(Math.random() * 3) });
   for (let i = 0; i < 120; i++) drops.push(spawn(true));
@@ -138,9 +147,8 @@ async function initHero() {
   function layout() {
     const dpr = DPR();
     const vw = document.documentElement.clientWidth;
-    k = Math.max(1, Math.ceil(vw * dpr / W));
-    const maxH = Math.max(0.58 * window.innerHeight, 240);
-    rows = Math.min(H, Math.max(118, Math.floor(maxH * dpr / k)));
+    k = HERO.k(vw, dpr);
+    rows = HERO.rows(vw, window.innerHeight, dpr, k);
     visW = Math.min(W, Math.ceil(vw * dpr / k));
     cropX = Math.floor((W - visW) / 2);
     ctx = sizeCanvas(cv, visW, rows, k);
@@ -148,7 +156,7 @@ async function initHero() {
     cv.style.left = ((vw - visW * k / dpr) / 2) + 'px';
   }
   layout();
-  window.addEventListener('resize', () => { layout(); paint(); });
+  onResize(() => { layout(); paint(); }, 60);
   let t0 = performance.now(), last = t0, glitchUntil = 0, nextGlitch = t0 + 4000 + Math.random() * 5000, warm = RM ? 1 : 0;
   function paint(now) {
     now = now || performance.now();
@@ -163,10 +171,16 @@ async function initHero() {
         frame[i] = b === 3 ? 0 : (y < 58 ? 3 : 2);
       }
     }
-    for (let i = 0; i < W * H; i++) { if (outline[i]) frame[i] = 0; if (ink[i]) frame[i] = ink[i] - 1; }
+    for (let i = 0; i < W * H; i++) if (card[i]) frame[i] = card[i] - 1;
+    // the last rows fall away into the page
+    for (let j = 0; j < FADE; j++) {
+      const y = rows - FADE + j; if (y < 0 || y >= H) continue;
+      const lvl = (j + 1) / (FADE + 1);
+      for (let x = 0; x < W; x++) if ((B4[(y % 4) * 4 + (x % 4)] + 0.5) / 16 < lvl) frame[y * W + x] = 0;
+    }
     if (warm < 1) {
       warm = Math.min(1, (now - t0) / 900);
-      const mid = 88;
+      const mid = 80;
       if (warm < 0.35) {
         const half = Math.floor((warm / 0.35) * W / 2);
         frame.fill(0);
