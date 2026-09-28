@@ -767,15 +767,33 @@ async function initMap() {
     const boxes = [scaleBox, ...uiBoxes];
     const hit = (a, b) => a[0] < b[2] + GAP && a[2] + GAP > b[0] && a[1] < b[3] + GAP && a[3] + GAP > b[1];
     // the files first: they always show, and everything else keeps clear of them
+    // each hangs its number over its point on a stem; where another file's number or marker is in the way the
+    // stem grows, and where there is no room above the number hangs under the point
     const files = pinEls.filter(o => o.P.cat === 'file'), rest = pinEls.filter(o => o.P.cat !== 'file');
-    for (const o of files) {
-      const x = (ox + o.P.x * Pd) / dpr, y = (oy + o.P.y * Pd) / dpr;
+    const at = o => [(ox + o.P.x * Pd) / dpr, (oy + o.P.y * Pd) / dpr];
+    const taken = files.map(o => { const [x, y] = at(o); return [x - 9, y - 9, x + 9, y + 9]; });
+    const numBox = (o, x, y, stem, below) => below ? [x - o.w / 2 - 2, y + stem - 2, x + o.w / 2 + 2, y + stem + o.h + 2]
+      : [x - o.w / 2 - 2, y - stem - o.h - 2, x + o.w / 2 + 2, y - stem + 2];
+    for (const o of files.slice().sort((a, b) => a.P.y - b.P.y)) {
+      const [x, y] = at(o);
       measure(o);
-      const stem = Math.max(6, Math.min(STEM, Math.floor(y - o.h - 4)));
+      const up = Math.max(6, Math.min(STEM, Math.floor(y - o.h - 4)));
+      const tries = [[up, false], [up + 10, false], [up + 20, false], [STEM, true], [STEM + 10, true]];
+      let pick = tries[0];
+      for (const [stem, below] of tries) {
+        const nb = numBox(o, x, y, stem, below);
+        if ((!below && nb[1] < 0) || (below && nb[3] > H)) continue;
+        if (!taken.some(b => hit(nb, b))) { pick = [stem, below]; break; }
+      }
+      const [stem, below] = pick;
       if (stem !== o.stem) { o.stem = stem; o.el.style.setProperty('--stem', stem + 'px'); }
+      if (below !== !!o.below) { o.below = below; o.el.classList.toggle('below', below); }
       o.el.classList.toggle('on', sel === 'p:' + o.P.id);
-      o.el.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,calc(-100% - ${stem}px))`;
-      boxes.push([x - o.w / 2 - 2, y - stem - o.h - 2, x + o.w / 2 + 2, y - stem + 2], [x - 9, y - stem, x + 9, y + 9]);
+      o.el.style.transform = below ? `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,${stem}px)`
+        : `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,calc(-100% - ${stem}px))`;
+      const nb = numBox(o, x, y, stem, below);
+      taken.push(nb);
+      boxes.push(nb, below ? [x - 9, y - 9, x + 9, y + stem] : [x - 9, y - stem, x + 9, y + 9]);
     }
     // other places: shown once the zoom is close enough; the chosen one first; a name that would
     // cover something already placed stands down to a square until there is room
@@ -1112,12 +1130,17 @@ async function initMap() {
     ptr.delete(e.pointerId);
     if (ptr.size < 2) pinch = null;
     stage.classList.remove('dragging');
-    if (e.type === 'pointerup' && ptr.size === 0 && moved <= 5) tap(e);
     if (ptr.size === 0) drag = null;
   }
   stage.addEventListener('pointerup', endPtr);
   stage.addEventListener('pointercancel', endPtr);
   stage.addEventListener('lostpointercapture', e => { if (ptr.has(e.pointerId)) endPtr(e); });
+  // a tap chooses on the click that follows it. A phone sends that click a moment after the finger lifts,
+  // so choosing on the lift let the click land on the backdrop of the popup it had just opened and shut it
+  stage.addEventListener('click', e => {
+    if (e.target.closest('.pin, .map-ui') || moved > 5) return;
+    tap(e);
+  });
 
   function worldAt(e) { const [sx, sy] = devAt(e); return [(sx - ox) / Pd, (sy - oy) / Pd]; }
   function inPoly(x, y, pts) {
@@ -1139,8 +1162,12 @@ async function initMap() {
     const dbl = now - lastTap.t < 320 && Math.hypot(e.clientX - lastTap.x, e.clientY - lastTap.y) < 30;
     lastTap = { t: now, x: e.clientX, y: e.clientY };
     if (dbl) { const [sx, sy] = devAt(e); zoomTo(zi + 1, sx, sy); return; }
+    // a district's name opens that district, wherever the labels had to move it to keep clear
+    const inside = r => e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    const lab = layer === 'surface' ? labelEls.find(o => o.L.key && !o.el.hidden && MD.districts[o.L.key] && inside(o.el.getBoundingClientRect())) : null;
+    const named = lab ? lab.L.key : null;
     const [x, y] = worldAt(e);
-    const k = districtAt(x, y);
+    const k = named || districtAt(x, y);
     if (k) select('d:' + k);
     else if (sel) select(null);
   }

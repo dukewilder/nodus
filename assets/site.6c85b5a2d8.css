@@ -378,6 +378,8 @@ html.map-open{overflow:hidden}
 .pin.file{z-index:4;padding:2px 7px;background:var(--ichor);color:var(--void);box-shadow:0 0 0 2px var(--grace),0 0 0 4px var(--void)}
 .pin.file::after{content:"";position:absolute;left:50%;top:100%;width:2px;height:var(--stem,14px);background:var(--grace);transform:translateX(-1px)}
 .pin.file .ring{position:absolute;left:50%;top:calc(100% + var(--stem,14px));width:0;height:0}
+.pin.file.below::after{top:auto;bottom:100%}
+.pin.file.below .ring{top:auto;bottom:calc(100% + var(--stem,14px))}
 .pin.file .ring::before,.pin.file .ring::after{content:"";position:absolute;left:-7px;top:-7px;width:10px;height:10px;border:2px solid var(--ichor);background:var(--void)}
 .pin.file .ring::after{animation:beacon 1.8s steps(6) infinite;background:none}
 @keyframes beacon{0%{transform:scale(1);opacity:1}100%{transform:scale(3.4);opacity:0}}
