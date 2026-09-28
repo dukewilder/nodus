@@ -910,7 +910,7 @@ async function initMap() {
     const html = popHtml(sel);
     if (popWide()) {
       if (popMode === 'modal') { popMode = null; Modal.hide(false); }
-      popEl.innerHTML = `<div class="mpop-bar"><span class="modal-k px">NOD // SURVEY</span><button class="btn" type="button" data-close>CLOSE</button></div>` + html;
+      popEl.innerHTML = `<div class="mpop-bar"><span class="modal-k px">NOD // MAP</span><button class="btn" type="button" data-close>CLOSE</button></div>` + html;
       popEl.hidden = false;
       popEl.scrollTop = 0;
       wirePop(popEl);
@@ -929,7 +929,7 @@ async function initMap() {
       sizeKey(node);
       const again = popMode === 'modal';
       popMode = 'modal';
-      Modal.show(node, { kicker: 'NOD // SURVEY', low: true, hash: hashOf(sel), push: arriving ? false : (again ? true : undefined), onClose: () => { if (popMode === 'modal') { popMode = null; sel = null; mark(); queue(); } } });
+      Modal.show(node, { kicker: 'NOD // MAP', low: true, hash: hashOf(sel), push: arriving ? false : (again ? true : undefined), onClose: () => { if (popMode === 'modal') { popMode = null; sel = null; mark(); queue(); } } });
     }
   }
   function closePop() {
@@ -973,25 +973,23 @@ async function initMap() {
   function renderPanel() {
     let html = '';
     if (layer === 'surface') {
-      const files = PLACES.filter(p => p.cat === 'file');
       const open = PLACES.filter(p => p.layer === 'surface' && !p.district && !['sealed', 'file', 'gate'].includes(p.cat));
-      html = `<p class="mp-k px">NOD // SURVEY</p><h2>Nodus</h2>${T.intro}` + (T.census || '') +
-        (files.length ? `<p class="mp-h px">FILES ON THE MAP</p>` + btnList(files.map(p => ['place', p.id, `${esc(p.file)} // ${p.name}`]), 'f') : '') +
-        `<p class="mp-h px">DISTRICTS</p>` + btnList(Object.entries(T.districts).map(([k, d]) => ['go', k, esc(d.name.toUpperCase())])) +
-        (open.length ? `<p class="mp-h px">THE BAY AND THE WARDS</p>` + btnList(open.map(p => ['place', p.id, p.name])) : '') +
-        `<div class="acts" style="margin-top:14px"><button class="btn" type="button" data-key="1">THE KEY</button></div>`;
+      // the census, the districts and the places off them fold away, shut until chosen
+      const fold = (t, body) => `<details class="mp-sec"><summary class="mp-h px">${t}</summary>${body}</details>`;
+      html = `<p class="mp-k px">NOD // MAP</p><h2>Nodus</h2>${T.intro}` +
+        (T.census ? fold('CENSUS // P-1', T.census) : '') +
+        fold('DISTRICTS', btnList(Object.entries(T.districts).map(([k, d]) => ['go', k, esc(d.name.toUpperCase())]))) +
+        (open.length ? fold('THE BAY AND THE WARDS', btnList(open.map(p => ['place', p.id, p.name]))) : '');
     } else {
       const below = PLACES.filter(p => p.layer === 'pan');
       html = `<p class="mp-k px">NOD // BELOW</p><h2>Under the city</h2>${T.panIntro}` +
-        `<p class="mp-h px">BELOW</p>` + btnList(below.map(p => ['place', p.id, p.name])) +
-        `<div class="acts" style="margin-top:14px"><button class="btn" type="button" data-key="1">THE KEY</button></div>`;
+        `<p class="mp-h px">BELOW</p>` + btnList(below.map(p => ['place', p.id, p.name]));
     }
     panel.innerHTML = html;
     fixRefs(panel);
     initNumerals(panel);
     $$('[data-go]', panel).forEach(b => b.addEventListener('click', () => flyToDistrict(b.dataset.go)));
     $$('[data-place]', panel).forEach(b => b.addEventListener('click', () => flyToPlace(b.dataset.place)));
-    $$('[data-key]', panel).forEach(b => b.addEventListener('click', showKey));
   }
 
   // ---- the key: every mark on the survey, each shown on a piece of the survey cut from the sheets
@@ -1018,7 +1016,7 @@ async function initMap() {
     const wasOpen = popMode === 'modal';
     if (popMode === 'stage') closePop();
     popMode = null;
-    Modal.show(node, { kicker: 'NOD // SURVEY // THE KEY', wide: true, push: wasOpen ? true : undefined });
+    Modal.show(node, { kicker: 'NOD // MAP // THE KEY', wide: true, push: wasOpen ? true : undefined });
     sizeKey(node);
     initNumerals(node);
     $$('[data-kj]', node).forEach(b => b.addEventListener('click', () => {
