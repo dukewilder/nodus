@@ -9,6 +9,8 @@ const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const DPR = () => window.devicePixelRatio || 1;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const ROOT = document.body.dataset.root || '';
+// links carried in the data are written from the site's root; set them from wherever this page is
+function fixRefs(root) { root.querySelectorAll('a[href^="~/"]').forEach(a => a.setAttribute('href', ROOT + a.getAttribute('href').slice(2))); }
 const PAGE = document.body.dataset.page || '';
 const SV = window.NODUS_SURVEY || null;
 const onResize = (fn, ms = 120) => { let t = 0; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(fn, ms); }); };
@@ -878,6 +880,7 @@ async function initMap() {
       `<h2 class="pop-t pt" id="mapPopT">${plainName(P.name)}</h2></div></div><div class="pop-b">${P.html}</div><div class="acts">${acts}</div></div>`;
   }
   function wirePop(root) {
+    fixRefs(root);
     $$('[data-go]', root).forEach(b => b.addEventListener('click', () => flyToDistrict(b.dataset.go)));
     $$('[data-place]', root).forEach(b => b.addEventListener('click', () => flyToPlace(b.dataset.place)));
     $$('[data-back]', root).forEach(b => b.addEventListener('click', () => { select(null); zoomTo(0); }));
@@ -966,6 +969,7 @@ async function initMap() {
         `<div class="acts" style="margin-top:14px"><button class="btn" type="button" data-key="1">THE KEY</button></div>`;
     }
     panel.innerHTML = html;
+    fixRefs(panel);
     initNumerals(panel);
     $$('[data-go]', panel).forEach(b => b.addEventListener('click', () => flyToDistrict(b.dataset.go)));
     $$('[data-place]', panel).forEach(b => b.addEventListener('click', () => flyToPlace(b.dataset.place)));
