@@ -111,18 +111,17 @@ canvas{display:block}
 .rec.off{background:var(--void)}
 
 /* ------------------------------------------------------------------ mirrors */
-.mirrors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.mirrors{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
 .mirror{display:grid;gap:4px;padding:18px 18px 16px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);background:var(--void);min-width:0;position:relative}
 .mirror::after{content:"";position:absolute;right:10px;top:10px;width:8px;height:8px;background:var(--ichor)}
-.mirror .m-n{font-family:var(--px);font-size:32px;line-height:40px;-webkit-font-smoothing:none;min-width:0;overflow-wrap:anywhere}
+.mirror .m-n{font-family:var(--px);font-size:24px;line-height:32px;-webkit-font-smoothing:none;min-width:0;overflow-wrap:anywhere}
 .mirror .m-h{font-family:var(--px);font-size:16px;line-height:24px;color:var(--signal);-webkit-font-smoothing:none;overflow-wrap:anywhere}
 @media (hover:hover){.mirror:hover{background:var(--signal);color:var(--void)}.mirror:hover .m-h{color:var(--void)}.mirror:hover::after{background:var(--void)}}
 .mirror:active{background:var(--signal);color:var(--void)}
-.mirror.main{grid-column:1/-1;padding:22px 22px 20px}
-.mirror.main .m-n{font-size:48px;line-height:56px}
-@media (max-width:1139px){.mirror.main .m-n{font-size:40px;line-height:48px}}
+/* YouTube leads: first in the row on a desktop, the same size as the rest; on a phone it takes the full width */
+@media (max-width:939px){.mirror.main{grid-column:1/-1;padding:22px 22px 20px}.mirror.main .m-n{font-size:40px;line-height:48px}}
 @media (max-width:600px){.mirror.main{padding:14px 14px 12px}.mirror.main .m-n{font-size:32px;line-height:40px}}
-@media (max-width:1139px){.mirror .m-n{font-size:24px;line-height:32px}}
+@media (max-width:1139px) and (min-width:940px){.mirror{padding:14px 12px 12px}.mirror .m-n{font-size:16px;line-height:24px}.mirror .m-h{font-size:12px;line-height:16px}}
 @media (max-width:939px){.mirrors{grid-template-columns:1fr 1fr}}
 @media (max-width:600px){.mirrors{grid-template-columns:1fr;gap:10px}.mirror{padding:12px 14px 10px;gap:0}}
 
