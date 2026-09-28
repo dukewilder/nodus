@@ -681,6 +681,7 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
 .por canvas{width:160px;height:160px}
 @media (max-width:560px){.por canvas{width:80px;height:80px}}
 .pop-vis.por canvas{width:320px;height:320px;max-width:100%;height:auto;aspect-ratio:1}
+.pop-vis.por.sm canvas{width:160px;height:160px}
 
 /* on a phone each row of a reading table becomes a block: the time on top, then what is on screen, then the note */
 @media (max-width:700px){
