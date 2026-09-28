@@ -114,11 +114,12 @@ canvas{display:block}
 .mirrors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .mirror{display:grid;gap:4px;padding:18px 18px 16px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);background:var(--void);min-width:0;position:relative}
 .mirror::after{content:"";position:absolute;right:10px;top:10px;width:8px;height:8px;background:var(--ichor)}
-.mirror .m-n{font-family:var(--px);font-size:32px;line-height:40px;-webkit-font-smoothing:none}
+.mirror .m-n{font-family:var(--px);font-size:32px;line-height:40px;-webkit-font-smoothing:none;min-width:0;overflow-wrap:anywhere}
 .mirror .m-h{font-family:var(--px);font-size:16px;line-height:24px;color:var(--signal);-webkit-font-smoothing:none;overflow-wrap:anywhere}
 @media (hover:hover){.mirror:hover{background:var(--signal);color:var(--void)}.mirror:hover .m-h{color:var(--void)}.mirror:hover::after{background:var(--void)}}
 .mirror:active{background:var(--signal);color:var(--void)}
-@media (max-width:899px){.mirrors{grid-template-columns:1fr 1fr}.mirror .m-n{font-size:24px;line-height:32px}}
+@media (max-width:1139px){.mirror .m-n{font-size:24px;line-height:32px}}
+@media (max-width:939px){.mirrors{grid-template-columns:1fr 1fr}}
 @media (max-width:600px){.mirrors{grid-template-columns:1fr;gap:10px}.mirror{padding:12px 14px 10px;gap:0}}
 
 /* ------------------------------------------------------------------ home */
@@ -330,11 +331,19 @@ details.card > .pop .pop-head{display:none}
   .map-shell:not(.full) .map-top #mapKey{grid-column:1;grid-row:2}
   .map-shell:not(.full) .map-top #mzFull{grid-column:2;grid-row:2}
   .map-shell:not(.full) .map-top .map-zoom{grid-column:1 / 3;grid-row:3}
+}
+/* full screen on a phone: the layer switch, KEY and CLOSE on one row that always fits; zoom floats over the map */
+@media (max-width:560px){
   .map-shell.full .map-main{position:relative}
-  .map-shell.full .map-zoom{position:absolute;z-index:2;right:calc(var(--gut) + 12px);bottom:20px;flex-direction:column;margin:0}
+  .map-shell.full .map-zoom{position:absolute;z-index:2;flex-direction:column;margin:0}
   .map-shell.full .mz + .mz{margin-left:0;margin-top:-2px}
   .map-shell.full .map-north{bottom:auto;top:10px}
+  .map-shell.full .map-top{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:stretch}
+  .map-shell.full .map-top .btn{justify-content:center}
+  .map-shell.full .map-top .layer .btn{flex:1 1 auto;min-width:0}
+  .map-shell.full .map-top #mzFull{margin:0}
 }
+@media (max-width:389px){.map-shell.full .map-top .btn{padding-inline:5px}}
 .map-scale{position:absolute;left:10px;bottom:10px;display:flex;align-items:flex-end;gap:8px;color:var(--signal);background:var(--void);padding:4px 8px 4px 6px;pointer-events:none}
 .map-scale i{display:block;height:8px;border:2px solid var(--signal);border-top:0;background:linear-gradient(90deg,var(--signal) 50%,transparent 50%) 0 100%/100% 4px no-repeat}
 .map-north{position:absolute;right:10px;bottom:10px;display:grid;justify-items:center;color:var(--grace);background:var(--void);padding:4px 8px;pointer-events:none}
