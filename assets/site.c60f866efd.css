@@ -709,3 +709,6 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
   table.beats td[data-l]::before,table.annals td[data-l]::before{content:attr(data-l);display:block;font-family:var(--px);font-size:16px;line-height:24px;font-style:normal;text-transform:uppercase;color:var(--signal);-webkit-font-smoothing:none;margin-bottom:2px}
   .tc{white-space:normal;text-align:left;overflow-wrap:anywhere}
 }
+/* a file's three buttons square up on phones: WATCH and ON THE MAP share a row, FRAME BY FRAME takes the next */
+@media (max-width:640px){.file-info .acts{display:grid;grid-template-columns:auto 1fr}.file-info .acts .btn{justify-content:center}.file-info .acts .fbf{grid-column:1 / -1}}
+@media (max-width:400px){.file-info .acts{grid-template-columns:1fr}}

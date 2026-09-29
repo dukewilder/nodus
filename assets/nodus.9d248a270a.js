@@ -321,15 +321,21 @@ function initNotes() {
       const s = sizes();
       drawInto(cv, file, b.dataset.f, s.w, s.h);
       cap.textContent = capOf(b);
-    } else if (fromUser) {
-      lbState = { i };
-      lastFocus = document.activeElement;
-      lb.hidden = false;
-      drawInto($('#lbCv'), file, b.dataset.f, window.innerWidth - 56, window.innerHeight - 190);
-      $('#lbCap').textContent = capOf(b);
-      $('#lbClose').focus();
-    }
+    } else if (fromUser) openLb(i);
   }
+  function openLb(i) {
+    const b = buttons[i];
+    if (!b || !lb) return;
+    lbState = { i };
+    lastFocus = document.activeElement;
+    lb.hidden = false;
+    drawInto($('#lbCv'), file, b.dataset.f, window.innerWidth - 56, window.innerHeight - 190);
+    $('#lbCap').textContent = capOf(b);
+    $('#lbClose').focus();
+  }
+  // FRAME BY FRAME, beside WATCH: the viewer from the first still on any screen
+  const fbf = $('[data-fbf]');
+  if (fbf) fbf.addEventListener('click', () => openLb(0));
   buttons.forEach((b, i) => b.addEventListener('click', () => show(i, true)));
   $$('tr', note).forEach(tr => {
     const b = $('.tc', tr); if (!b) return;
