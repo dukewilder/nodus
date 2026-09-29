@@ -387,11 +387,12 @@ async function plate(cv) {
   }
   const draw = () => {
     let avail = n * scale;
-    const host = cv.closest('summary, .modal-body, .mpop');
+    const host = cv.closest('summary, .modal-body, .map-panel, .ms-body');
     if (host && n === 160) {
       const cs = getComputedStyle(host);
       avail = Math.min(avail, host.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 16);
     }
+    if (cv.dataset.max) avail = Math.min(avail, Number(cv.dataset.max));
     const k = fitK(n, avail, scale);
     const ctx = sizeCanvas(cv, n, n, k);
     ctx.drawImage(im, 0, 0, n * k, n * k);
@@ -407,7 +408,7 @@ function initPlates(root = document, eager = false) {
 }
 
 /* numbers, dates and file references in the prose are set in the archive's own face */
-const NUM_SEL = '.chap p, .chap li, .note-text p, .note-text li, .note-text td, .tl-text, .file-line, .preface p, .pop-b p, .pop-b li, .map-panel p, .kt > span, .census-d';
+const NUM_SEL = '.chap p, .chap li, .note-text p, .note-text li, .note-text td, .tl-text, .file-line, .preface p, .pop-b p, .pop-b li, .map-panel p, .kt > span, .census-d, .lg-text p, .loc-d';
 function initNumerals(scope) {
   const RE = /(NODUS \/\/ \d{4}(?: \/\/ P[+-]?\d+)?|CAM V3-2|CAM \d{2}|BENCH V3|\bP[+-]?\d+\b|\b\d{2}:\d{2}(?::\d{2}){0,2}\b|\d[\d,.:\-]*\d|\d)/g;
   const skip = n => n.parentElement && n.parentElement.closest('.px, .hudtxt, pre, button, .tc, .n, .lost, .num, .bna, .hr, .stats, .rd, script, style, template');
@@ -555,11 +556,12 @@ async function initMap() {
   const MD = SV.mapData, T = SV.text, MS = SV.map;
   const WW = MD.size[0], WH = MD.size[1], KM = MD.km;
   const shell = $('#mapShell'), stage = $('#mapStage'), frameEl = $('#mapFrame'), cv = $('#mapCv'), fx = $('#mapFx'), svg = $('#mapSvg');
-  const labs = $('#mapLabels'), pinsEl = $('#mapPins'), panel = $('#mapPanel'), scaleEl = $('#mapScale'), hintEl = $('#mapHint'), popEl = $('#mapPop');
+  const labs = $('#mapLabels'), pinsEl = $('#mapPins'), panel = $('#mapPanel'), scaleEl = $('#mapScale'), hintEl = $('#mapHint');
+  const sheet = $('#mapSheet'), msBody = $('#msBody'), topEl = $('.map-top');
   const ctx = cv.getContext('2d'), fctx = fx.getContext('2d');
   const NS = 'http://www.w3.org/2000/svg';
   const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const [a, v] of Object.entries(attrs)) e.setAttribute(a, v); if (parent) parent.appendChild(e); return e; };
-  let layer = 'surface', sel = null, full = false, popMode = null, arriving = false;
+  let layer = 'surface', sel = null, full = false, arriving = false;
   let cx = WW / 2, cy = WH / 2, zi = 0, ladder = [], ox = 0, oy = 0, Pd = 1, dpr = DPR();
   const imgs = new Map();
   const LV = () => MS[layer];
@@ -732,10 +734,10 @@ async function initMap() {
         b.setAttribute('aria-label', `NODUS // ${P.file}, ${P.plain}`);
       } else {
         b.className = `pin poi ${P.cat}${layer === 'pan' ? ' pan' : ''}`;
-        b.innerHTML = `<span class="pl">${P.name}</span>`;
+        b.innerHTML = `<span class="pl">${P.name}</span><span class="ring" aria-hidden="true"></span>`;
         b.setAttribute('aria-label', P.cat === 'sealed' ? 'A place not yet recovered' : P.plain);
       }
-      b.addEventListener('click', e => { e.stopPropagation(); select('p:' + P.id); });
+      b.addEventListener('click', e => { e.stopPropagation(); if (P.cat === 'sealed') return; select('p:' + P.id); keepInView(P); });
       pinsEl.appendChild(b);
       return { P, el: b };
     });
@@ -806,41 +808,29 @@ async function initMap() {
       taken.push(nb);
       boxes.push(nb, below ? [x - 9, y - 9, x + 9, y + stem] : [x - 9, y - stem, x + 9, y + 9]);
     }
-    // other places: shown once the zoom is close enough; the chosen one first; a name that would
-    // cover something already placed stands down to a square until there is room
-    const order = rest.filter(o => sel === 'p:' + o.P.id).concat(rest.filter(o => sel !== 'p:' + o.P.id));
-    for (const o of order) {
-      const on = zi >= o.P.lvl || sel === 'p:' + o.P.id;
-      o.el.hidden = !on;
-      o.el.classList.toggle('on', sel === 'p:' + o.P.id);
-      if (!on) continue;
-      const x = (ox + o.P.x * Pd) / dpr, y = (oy + o.P.y * Pd) / dpr;
-      if (o.dot) o.el.classList.remove('dot');
-      if (!o.w) measure(o);
-      const box = [x - 4, y - 10, x - 4 + o.w, y + 10];
-      const dot = sel !== 'p:' + o.P.id && (o.P.cat === 'sealed' || boxes.some(b => hit(box, b)));
-      o.dot = dot;
-      o.el.classList.toggle('dot', dot);
-      o.el.style.transform = `translate(${(x - 4).toFixed(1)}px,${(y - 10).toFixed(1)}px)`;
-      boxes.push(dot ? [x - 5, y - 5, x + 5, y + 5] : box);
-    }
+    // the names of the districts come first while the city is seen whole or near it, so the reader always knows
+    // where on the map they are; closer in, the places come first and a district's name keeps clear of them
     const free = a => !boxes.some(b => hit(a, b));
-    for (const o of labelEls) {
+    function placeLabel(o) {
       const L = o.L;
       const min = L.min !== undefined ? L.min : (L.wide ? 2.2 : 0);
       const on = P >= min && (L.max === undefined || P < L.max);
       o.el.hidden = !on;
-      if (!on) continue;
+      if (!on) return;
       const mode = (narrow && L.short ? 's' : 'l');
       if (mode !== o.mode) {
         o.mode = mode; o.w = 0;
         o.el.innerHTML = esc(narrow && L.short ? L.short : L.text).replace(/\n/g, '<br>') + (L.sub ? `<small>${esc(L.sub)}</small>` : '');
       }
       measure(o);
-      const x = (ox + L.x * Pd) / dpr, y = (oy + L.y * Pd) / dpr;
+      // a name whose point is in view is kept whole inside the frame; one whose point has left the view goes
+      const x0 = (ox + L.x * Pd) / dpr, y0 = (oy + L.y * Pd) / dpr;
+      const inside = x0 >= 0 && x0 <= W && y0 >= 0 && y0 <= H;
+      const x = inside ? Math.min(Math.max(x0, o.w / 2 + 2), W - o.w / 2 - 2) : x0;
+      const y = inside ? Math.min(Math.max(y0, o.h / 2 + 2), H - o.h / 2 - 2) : y0;
       const a = [x - o.w / 2, y - o.h / 2, x + o.w / 2, y + o.h / 2];
-      let dx = 0, dy = 0, ok = true;
-      if (a[2] > 0 && a[0] < W && a[3] > 0 && a[1] < H) {
+      let dx = 0, dy = 0, ok = inside;
+      if (inside) {
         ok = free(a);
         if (!ok) {
           const tries = [];
@@ -859,6 +849,39 @@ async function initMap() {
       o.el.classList.toggle('off', !ok);
       o.el.style.transform = `translate(${(x + dx).toFixed(1)}px,${(y + dy).toFixed(1)}px) translate(-50%,-50%)`;
     }
+    const distFirst = P < 3.2;
+    if (distFirst) labelEls.filter(o => o.L.key).forEach(placeLabel);
+    // other places: shown once the zoom is close enough; the chosen one first; a name that would
+    // cover something already placed stands down to a square until there is room
+    const order = rest.filter(o => sel === 'p:' + o.P.id).concat(rest.filter(o => sel !== 'p:' + o.P.id));
+    for (const o of order) {
+      const chosen = sel === 'p:' + o.P.id;
+      const x = (ox + o.P.x * Pd) / dpr, y = (oy + o.P.y * Pd) / dpr;
+      const on = (zi >= o.P.lvl || chosen) && x > -8 && x < W + 8 && y > -12 && y < H + 12;
+      o.el.hidden = !on;
+      o.el.classList.toggle('on', chosen);
+      if (!on) continue;
+      if (o.dot) o.el.classList.remove('dot');
+      if (!o.w) measure(o);
+      // the name to the right of its mark, or to the left where the right is taken or runs off the map;
+      // a name with room on neither side stands down to its mark until there is room
+      const R = [x - 4, y - 10, x - 4 + o.w, y + 10], Lb = [x + 4 - o.w, y - 10, x + 4, y + 10];
+      const clear = b => b[0] >= 2 && b[2] <= W - 2 && !boxes.some(q => hit(b, q));
+      let left = false, dot = false;
+      if (o.P.cat === 'sealed') dot = true;
+      else if (!clear(R)) {
+        if (clear(Lb)) left = true;
+        else if (chosen) left = R[2] > W - 2 && Lb[0] >= 2;
+        else dot = true;
+      }
+      o.dot = dot;
+      o.el.classList.toggle('dot', dot);
+      o.el.classList.toggle('lft', left);
+      o.el.style.transform = left ? `translate(${(x + 4 - o.w).toFixed(1)}px,${(y - 10).toFixed(1)}px)`
+        : `translate(${(x - 4).toFixed(1)}px,${(y - 10).toFixed(1)}px)`;
+      boxes.push(dot ? [x - 5, y - 5, x + 5, y + 5] : (left ? Lb : R));
+    }
+    labelEls.filter(o => !distFirst || !o.L.key).forEach(placeLabel);
     stage.classList.toggle('zoomed', zi > 0 || full);
     $('#mzOut').disabled = zi === 0;
     $('#mzIn').disabled = zi === ladder.length - 1;
@@ -881,90 +904,306 @@ async function initMap() {
     labelEls.forEach(o => { if (o.L.key) o.el.classList.toggle('hi', sel === 'd:' + o.L.key && layer === 'surface'); });
   }
 
-  // ---- the popup: over the map where there is room, a sheet from the bottom where there is not
-  const popWide = () => frameEl.clientWidth >= 720 && !(full && window.innerWidth < 720);
+  // ---- the places: a directory of every one, and each one's entry. On a wide screen both stand beside the
+  // map; on a phone the directory is under the map, and an entry rises over the foot of the map in a sheet
+  const txt = h => { const d = document.createElement('div'); d.innerHTML = h; return d.textContent; };
+  const norm = s => String(s).toUpperCase().replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
+  const GROUP_NAME = { wards: 'The Wards', bay: 'The Bay', gates: 'The Gates', below: 'Below' };
+  const GROUP_LABEL = { wards: 'THE WARDS', bay: 'THE BAY', gates: 'A GATE', below: 'BELOW' };
+  const groupOf = P => (P.layer === 'pan' ? 'below' : (P.district && T.districts[P.district] ? P.district
+    : (P.cat === 'gate' ? 'gates' : (/^THE BAY/.test(txt(P.k)) ? 'bay' : 'wards'))));
+  const GROUPS = Object.keys(T.districts).concat(['wards', 'bay', 'gates', 'below']);
+  const gName = g => (T.districts[g] ? T.districts[g].name : GROUP_NAME[g]);
+  const OPEN = PLACES.filter(p => p.cat !== 'sealed');
+  const inGroup = g => OPEN.filter(p => groupOf(p) === g);
+  // what a place is, without the district its group already names
+  const kShort = P => {
+    const k = txt(P.k), g = groupOf(P), d = T.districts[g], cut = k.indexOf(' // ');
+    const own = d ? [d.name.toUpperCase(), d.street] : [GROUP_LABEL[g]];
+    if (cut < 0) return own.includes(k) ? '' : k;
+    return own.includes(k.slice(0, cut)) ? k.slice(cut + 4) : k;
+  };
   const hashOf = id => (!id ? '' : id.startsWith('d:') ? '#d-' + id.slice(2) : (byId(id.slice(2)) && byId(id.slice(2)).cat !== 'sealed' ? '#' + id.slice(2) : ''));
+  const setHash = h => { try { history.replaceState(history.state, '', location.pathname + location.search + h); } catch (e) { /* ignore */ } };
   const btnList = (items, cls) => `<div class="dlist px">${items.map(([k, v, t]) => `<button type="button" class="${cls || ''}" data-${k}="${esc(v)}">${t}</button>`).join('')}</div>`;
   const plainName = n => n.replace(/'|&#x27;|&#39;/g, '’');
-  function popHtml(id) {
+  // how far a place is from another, and which way, north being up
+  const DIRS = ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N', 'NE'];
+  const far = d => { const m = d * KM * 1000; return m < 1000 ? `${Math.max(50, Math.round(m / 50) * 50)} M` : `${(m / 1000).toFixed(1)} KM`; };
+  const way = (dx, dy) => DIRS[((Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) % 8) + 8) % 8];
+  function nearHtml(P) {
+    const rows = OPEN.filter(q => q.layer === P.layer && q.id !== P.id)
+      .map(q => ({ q, d: Math.hypot(q.x - P.x, q.y - P.y) })).sort((a, b) => a.d - b.d).slice(0, 5);
+    return `<section class="near"><p class="pop-h px">NEAR HERE</p><div class="nlist">` + rows.map(({ q, d }) =>
+      `<button type="button" class="nrow" data-place="${q.id}"><span class="pn px">${q.name}</span><span class="nd px">${far(d)} ${way(q.x - P.x, q.y - P.y)}</span></button>`).join('') +
+      `</div></section>`;
+  }
+  function popHtml(id, thumb) {
     if (id.startsWith('d:')) {
       const key = id.slice(2), d = T.districts[key];
-      const inside = PLACES.filter(p => p.district === key && p.layer === 'surface');
+      const inside = OPEN.filter(p => p.district === key && p.layer === 'surface');
       const kg = (T.key || []).find(g => g.key === key);
       const same = d.street.replace(/^THE /, '') === d.name.toUpperCase().replace(/^THE /, '');
       const mark = d.mark ? `<div class="pop-vis sig"><canvas class="sigil" data-sigil="${esc(d.mark)}" data-scale="2" aria-hidden="true"></canvas></div>` : '';
       return `<div class="pop pop-district"><div class="pop-head${mark ? '' : ' nv'}">${mark}<div class="pop-id"><p class="pop-k px">${esc(d.name.toUpperCase())}${same ? '' : ' // ' + d.street} // ${d.held}</p>` +
         `<h2 class="pop-t" id="mapPopT">${esc(d.name)}</h2></div></div><div class="pop-b">${d.html}</div>` +
         (d.census || '') +
-        (inside.length ? `<p class="pop-h px">PLACES</p>` + btnList(inside.map(p => ['place', p.id, p.cat === 'file' ? `${esc(p.file)} // ${p.name}` : p.name]), '') : '') +
+        (inside.length ? `<p class="pop-h px">PLACES</p>` + btnList(inside.map(p => ['place', p.id, p.name]), '') : '') +
         (kg ? `<details class="pkey"><summary class="px">THE MARKS HERE</summary><ul class="mapkey-l">${kg.items.map(keyItem).join('')}</ul></details>` : '') +
-        `<div class="acts"><button class="btn" type="button" data-back="1">THE WHOLE CITY</button></div></div>`;
+        `<div class="acts"><a class="btn" href="${U('index/locations/#g-' + key)}">IN THE INDEX</a><button class="btn" type="button" data-back="1">THE WHOLE CITY</button></div></div>`;
     }
     const P = byId(id.slice(2));
-    let acts = '';
-    if (P.cat === 'file') acts = (P.watch ? `<a class="btn hot" href="${esc(P.watch)}" target="_blank" rel="noopener">WATCH</a>` : '') + `<a class="btn grace" href="${U('files/' + P.file + '/')}">READ THE NOTES</a>`;
+    let acts = `<a class="btn" href="${U('index/locations/#l-' + P.id)}">IN THE INDEX</a>`;
     if (P.district && T.districts[P.district]) acts += `<button class="btn" type="button" data-go="${P.district}">${esc(T.districts[P.district].name.toUpperCase())}</button>`;
     acts += `<button class="btn" type="button" data-back="1">${P.layer === 'pan' ? 'ALL OF BELOW' : 'THE WHOLE CITY'}</button>`;
-    const vis = P.img ? `<div class="pop-vis por sm"><canvas data-por="${esc(P.img)}" data-scale="1" aria-hidden="true"></canvas></div>` : '';
+    const vis = P.img ? `<div class="pop-vis por sm"><canvas data-por="${esc(P.img)}" data-scale="1"${thumb ? ' data-max="112"' : ''} aria-hidden="true"></canvas></div>` : '';
     return `<div class="pop pop-place"><div class="pop-head${vis ? '' : ' nv'}">${vis}<div class="pop-id"><p class="pop-k px">${P.k}</p>` +
       `<h2 class="pop-t pt" id="mapPopT">${plainName(P.name)}</h2></div></div><div class="pop-b">${P.html}</div><div class="acts">${acts}</div></div>`;
   }
-  function wirePop(root) {
-    fixRefs(root);
-    $$('[data-go]', root).forEach(b => b.addEventListener('click', () => flyToDistrict(b.dataset.go)));
-    $$('[data-place]', root).forEach(b => b.addEventListener('click', () => flyToPlace(b.dataset.place)));
-    $$('[data-back]', root).forEach(b => b.addEventListener('click', () => { select(null); zoomTo(0); }));
-    $$('[data-close]', root).forEach(b => b.addEventListener('click', () => select(null)));
-    $$('a[href]', root).forEach(a => a.addEventListener('click', () => { if (full) setFull(false, true); }));
+
+  // ---- the directory: every open place by district, with a search
+  const listEl = document.createElement('div');
+  listEl.className = 'mp-list';
+  const entryEl = document.createElement('div');
+  entryEl.className = 'mp-entry';
+  entryEl.hidden = true;
+  panel.replaceChildren(listEl, entryEl);
+  const rowOf = id => (id ? $(`.prow[data-${id.startsWith('d:') ? 'go' : 'place'}="${id.slice(2)}"]`, listEl) : null);
+  function markRow() {
+    $$('.prow[aria-current]', listEl).forEach(b => b.removeAttribute('aria-current'));
+    const r = rowOf(sel);
+    if (r) r.setAttribute('aria-current', 'true');
   }
-  function showPop() {
-    if (!sel) { closePop(); return; }
-    const html = popHtml(sel);
-    if (popWide()) {
-      if (popMode === 'modal') { popMode = null; Modal.hide(false); }
-      popEl.innerHTML = `<div class="mpop-bar"><span class="modal-k px">NOD // MAP</span><button class="btn" type="button" data-close>CLOSE</button></div>` + html;
-      popEl.hidden = false;
-      popEl.scrollTop = 0;
-      wirePop(popEl);
-      initNumerals(popEl);
-      initPlates(popEl, true);
-      sizeKey(popEl);
-      popMode = 'stage';
-      try { history.replaceState(history.state, '', location.pathname + location.search + hashOf(sel)); } catch (e) { /* ignore */ }
+  function buildList() {
+    const key = (P, g) => norm(`${P.plain} ${txt(P.k)} ${gName(g)}`);
+    listEl.innerHTML = `<div class="mp-head"></div>` +
+      `<div class="mp-find"><label class="px" for="mapFind">FIND A PLACE</label>` +
+      `<input id="mapFind" class="px" type="search" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go" placeholder="A NAME, A STREET, A KIND">` +
+      `<p class="px mp-found" id="mapFound" aria-live="polite"></p></div>` +
+      `<div class="mp-groups">` + GROUPS.map(g => {
+        const rows = inGroup(g), d = T.districts[g];
+        if (!rows.length) return '';
+        return `<details class="pgrp" data-g="${g}"><summary><span class="g-n px">${esc(gName(g).toUpperCase())}</span><span class="g-c px">${rows.length}</span></summary><div class="g-rows">` +
+          (d ? `<button type="button" class="prow dist" data-go="${g}" data-s="${esc(norm(d.name + ' ' + d.street))}"><span class="pn px">${esc(d.name.toUpperCase())}</span>` +
+            `<span class="pk px">THE DISTRICT${d.street.replace(/^THE /, '') !== d.name.toUpperCase().replace(/^THE /, '') ? ' // ' + esc(d.street) : ''}</span></button>` : '') +
+          rows.map(P => { const s = kShort(P); return `<button type="button" class="prow" data-place="${P.id}" data-s="${esc(key(P, g))}"><span class="pn px">${P.name}</span>${s ? `<span class="pk px">${esc(s)}</span>` : ''}</button>`; }).join('') +
+          `</div></details>`;
+      }).join('') + `</div>`;
+    setListHead();
+    const find = $('#mapFind', listEl);
+    find.addEventListener('input', () => filter(find.value));
+    find.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      const b = $$('.prow', listEl).find(x => !x.hidden && !x.closest('.pgrp').hidden);
+      if (b) { e.preventDefault(); find.blur(); b.click(); }
+    });
+    listEl.addEventListener('click', e => {
+      const b = e.target.closest('.prow');
+      if (!b) return;
+      if (b.dataset.place) flyToPlace(b.dataset.place); else flyToDistrict(b.dataset.go);
+    });
+  }
+  function setListHead() {
+    const h = $('.mp-head', listEl);
+    if (!h) return;
+    h.innerHTML = layer === 'surface'
+      ? `<p class="mp-k px">NOD // MAP</p><h2>Nodus</h2><div class="mp-intro">${T.intro}</div>` +
+        (T.census ? `<details class="mp-sec"><summary class="mp-h px">CENSUS // P-1</summary>${T.census}</details>` : '')
+      : `<p class="mp-k px">NOD // BELOW</p><h2>Under the city</h2><div class="mp-intro">${T.panIntro}</div>`;
+    fixRefs(h);
+    initNumerals(h);
+  }
+  function filter(q) {
+    const n = norm(q);
+    let hits = 0;
+    $$('.pgrp', listEl).forEach(gEl => {
+      let any = false;
+      $$('.prow', gEl).forEach(b => {
+        const ok = !n || b.dataset.s.includes(n);
+        b.hidden = !ok;
+        if (ok) { any = true; if (!b.classList.contains('dist')) hits++; }
+      });
+      gEl.hidden = !any;
+      const r = rowOf(sel);
+      gEl.open = n ? any : !!(r && gEl.contains(r));
+    });
+    $('#mapFound', listEl).textContent = !n ? '' : hits ? `${hits} FOUND` : 'NOTHING BY THAT NAME';
+  }
+
+  // ---- an entry: what a place or a district is, the places near it, and the one before and after it
+  const seqOf = id => (id.startsWith('d:') ? GROUPS.filter(g => T.districts[g]).map(g => 'd:' + g)
+    : inGroup(groupOf(byId(id.slice(2)))).map(p => 'p:' + p.id));
+  const posOf = (id, short) => {
+    const seq = seqOf(id), i = seq.indexOf(id), n = `${i + 1} OF ${seq.length}`;
+    if (short) return n;
+    return id.startsWith('d:') ? `DISTRICT ${n}` : `${gName(groupOf(byId(id.slice(2)))).toUpperCase()} // ${n}`;
+  };
+  function step(dlt) {
+    if (!sel) return;
+    const seq = seqOf(sel), i = seq.indexOf(sel);
+    if (i < 0) return;
+    const nx = seq[(i + dlt + seq.length) % seq.length];
+    if (nx.startsWith('d:')) flyToDistrict(nx.slice(2)); else flyToPlace(nx.slice(2));
+  }
+  function renderEntry(thumb) {
+    entryEl.innerHTML = `<div class="enav"><button class="btn" type="button" data-list>&lt; ALL PLACES</button>` +
+      `<span class="px en-pos">${esc(posOf(sel))}</span>` +
+      `<button class="mz" type="button" data-step="-1" aria-label="The one before">&lt;</button>` +
+      `<button class="mz" type="button" data-step="1" aria-label="The one after">&gt;</button></div>` +
+      popHtml(sel, thumb) + (sel.startsWith('p:') ? nearHtml(byId(sel.slice(2))) : '');
+    fixRefs(entryEl);
+    $$('[data-go]', entryEl).forEach(b => b.addEventListener('click', () => flyToDistrict(b.dataset.go)));
+    $$('[data-place]', entryEl).forEach(b => b.addEventListener('click', () => flyToPlace(b.dataset.place)));
+    $$('[data-back]', entryEl).forEach(b => b.addEventListener('click', () => { select(null); zoomTo(0); }));
+    $$('[data-list]', entryEl).forEach(b => b.addEventListener('click', () => select(null)));
+    $$('[data-step]', entryEl).forEach(b => b.addEventListener('click', () => step(Number(b.dataset.step))));
+    $$('a[href]', entryEl).forEach(a => a.addEventListener('click', () => { if (full) setFull(false, true); }));
+    initNumerals(entryEl);
+    initPlates(entryEl, true);
+    sizeKey(entryEl);
+  }
+  // the directory stands beside the map, or under it
+  const side = () => panel.offsetParent !== null && panel.getBoundingClientRect().left >= frameEl.getBoundingClientRect().right - 2;
+  function showEntry() {
+    if (!sel) return;
+    if (side()) {
+      closeSheet(true);
+      renderEntry(false);
+      if (listEl.parentNode !== panel) panel.insertBefore(listEl, panel.firstChild);
+      if (entryEl.parentNode !== panel) panel.appendChild(entryEl);
+      listEl.hidden = true;
+      entryEl.hidden = false;
+      panel.scrollTop = 0;
     } else {
-      popEl.hidden = true; popEl.innerHTML = '';
-      const wrap = document.createElement('div');
-      wrap.innerHTML = html;
-      const node = wrap.firstElementChild;
-      wirePop(node);
-      initPlates(node, true);
-      sizeKey(node);
-      const again = popMode === 'modal';
-      popMode = 'modal';
-      Modal.show(node, { kicker: 'NOD // MAP', low: true, hash: hashOf(sel), push: arriving ? false : (again ? true : undefined), onClose: () => { if (popMode === 'modal') { popMode = null; sel = null; mark(); queue(); } } });
+      renderEntry(true);
+      openSheet('entry');
     }
+    setHash(hashOf(sel));
   }
-  function closePop() {
-    if (popMode === 'stage') {
-      popEl.hidden = true; popEl.innerHTML = '';
-      try { history.replaceState(history.state, '', location.pathname + location.search); } catch (e) { /* ignore */ }
-    } else if (popMode === 'modal') { popMode = null; Modal.hide(false); }
-    popMode = null;
+  function hideEntry(prev) {
+    if (sheetKind === 'entry') closeSheet(true);
+    if (entryEl.parentNode === panel) entryEl.hidden = true;
+    listEl.hidden = false;
+    // back in the directory, at the place just left, which stays marked until another is chosen
+    const r = rowOf(prev);
+    $$('.prow.was', listEl).forEach(b => b.classList.remove('was'));
+    if (r) {
+      r.classList.add('was');
+      const g = r.closest('.pgrp');
+      if (g) g.open = true;
+      if (side() && listEl.parentNode === panel) {
+        const pr = panel.getBoundingClientRect(), rr = r.getBoundingClientRect();
+        if (rr.top < pr.top || rr.bottom > pr.bottom) panel.scrollTop += rr.top - pr.top - pr.height / 3;
+      }
+    }
+    setHash('');
   }
-  function select(id) { sel = id; mark(); if (id) showPop(); else closePop(); queue(); }
+
+  // ---- the sheet over the foot of the map on a phone: an entry, or the directory
+  // the sheet takes a step in the phone's history, so its back button closes the sheet before it leaves the map
+  let sheetKind = null, sheetBig = false, sheetPx = 0, sheetPushed = false;
+  function openSheet(kind) {
+    if (!sheetKind && !sheetPushed) {
+      // the step back lands on the map with nothing chosen, so an address that named a place opens it only once
+      try {
+        history.replaceState(history.state, '', location.pathname + location.search);
+        history.pushState({ nodusSheet: 1 }, '', location.pathname + location.search + hashOf(sel));
+        sheetPushed = true;
+      } catch (e) { sheetPushed = false; }
+    }
+    sheetKind = kind;
+    if (kind === 'list') { msBody.replaceChildren(listEl); listEl.hidden = false; }
+    else { msBody.replaceChildren(entryEl); entryEl.hidden = false; }
+    sheet.hidden = false;
+    sheet.classList.toggle('lst', kind === 'list');
+    $('#msPos').textContent = kind === 'list' ? 'ALL PLACES' : posOf(sel, true);
+    $('#msPrev').hidden = $('#msNext').hidden = $('#msMore').hidden = kind === 'list';
+    $('#mapList').setAttribute('aria-pressed', kind === 'list' ? 'true' : 'false');
+    setBig(kind === 'list');
+    msBody.scrollTop = 0;
+  }
+  function setBig(on) {
+    sheetBig = on;
+    sheet.classList.toggle('big', on);
+    const m = $('#msMore');
+    m.textContent = on ? 'LESS' : 'MORE';
+    m.setAttribute('aria-expanded', on ? 'true' : 'false');
+    sizeSheet();
+    if (!on) msBody.scrollTop = 0;
+  }
+  function sizeSheet() {
+    if (!sheetKind) { sheetPx = 0; stage.style.setProperty('--sheet', '0px'); return; }
+    const H = stage.clientHeight;
+    sheet.style.height = '';
+    const h = sheetBig ? H : Math.min(Math.round(H * 0.46), sheet.scrollHeight);
+    sheet.style.height = h + 'px';
+    // a sheet over the whole map leaves nothing to keep a place clear of
+    sheetPx = sheetBig ? 0 : h;
+    stage.style.setProperty('--sheet', sheetPx + 'px');
+  }
+  function closeSheet(quiet, fromPop) {
+    if (!sheetKind) return;
+    const was = sheetKind;
+    sheetKind = null;
+    sheet.hidden = true;
+    if (sheetPushed && !fromPop && !(was === 'list' && sel && !quiet)) { sheetPushed = false; history.back(); }
+    if (fromPop) sheetPushed = false;
+    if (listEl.parentNode === msBody) { panel.insertBefore(listEl, panel.firstChild); listEl.hidden = false; }
+    if (entryEl.parentNode === msBody) { panel.appendChild(entryEl); entryEl.hidden = true; }
+    sizeSheet();
+    $('#mapList').setAttribute('aria-pressed', 'false');
+    if (quiet) return;
+    if (was === 'entry' && sel) select(null);
+    else if (was === 'list' && sel) showEntry();       // back to the place that was open
+  }
+  window.addEventListener('popstate', e => { if (sheetKind && !(e.state && e.state.nodusSheet)) closeSheet(false, true); });
+  $('#msPrev').addEventListener('click', () => step(-1));
+  $('#msNext').addEventListener('click', () => step(1));
+  $('#msMore').addEventListener('click', () => setBig(!sheetBig));
+  $('#msClose').addEventListener('click', () => closeSheet());
+  $('#msGrab').addEventListener('click', () => { if (sheetKind === 'entry') setBig(!sheetBig); });
+  // a tap on the peek of an entry opens it the whole way
+  msBody.addEventListener('click', e => { if (sheetKind === 'entry' && !sheetBig && !e.target.closest('button, a, summary, input')) setBig(true); });
+  $('#mapList').addEventListener('click', () => {
+    if (sheetKind === 'list') { closeSheet(); return; }
+    openSheet('list');
+    if (!window.matchMedia('(pointer:coarse)').matches) { const f = $('#mapFind', listEl); if (f) f.focus({ preventScroll: true }); }
+  });
+
+  function select(id) {
+    const prev = sel;
+    sel = id;
+    mark();
+    markRow();
+    if (id) showEntry(); else hideEntry(prev);
+    queue();
+  }
+  // a place chosen on the map stays in the part of the map the sheet leaves open
+  function keepInView(P) {
+    if (side() || !ladder.length) return;
+    if (zi === 0) { flyTo(P.x - 18, P.y - 14, P.x + 18, P.y + 14, 3); return; }
+    const W = cv.width / dpr, H = cv.height / dpr;
+    const x = (ox + P.x * Pd) / dpr, y = (oy + P.y * Pd) / dpr;
+    if (x > 24 && x < W - 24 && y > 32 && y < H - sheetPx - 24) return;
+    cx = P.x;
+    cy = P.y + (sheetPx / 2) * dpr / Pd;
+    queue();
+  }
   function flyTo(x0, y0, x1, y1, minP) {
-    const want = Math.min(cv.width * 0.8 / Math.max(8, x1 - x0), cv.height * 0.8 / Math.max(8, y1 - y0));
+    const room = Math.max(cv.height * 0.35, cv.height - sheetPx * dpr);
+    const want = Math.min(cv.width * 0.8 / Math.max(8, x1 - x0), room * 0.8 / Math.max(8, y1 - y0));
     let best = 0;
     ladder.forEach((st, i) => { if (stepPd(st) <= want) best = i; });
     if (minP) while (best < ladder.length - 1 && stepPd(ladder[best]) / dpr < minP) best++;
     zi = best;
-    cx = (x0 + x1) / 2; cy = (y0 + y1) / 2;
-    // keep the chosen place clear of the popup that sits over the right of the map
-    if (popWide()) { const popW = Math.min(392, frameEl.clientWidth - 24); cx += (popW + 12) / 2 * dpr / stepPd(ladder[zi]); }
+    cx = (x0 + x1) / 2;
+    cy = (y0 + y1) / 2 + (sheetPx / 2) * dpr / stepPd(ladder[zi]);
     queue();
     if (!full) {
-      const r = stage.getBoundingClientRect();
-      if (r.top < 0 || r.bottom > window.innerHeight) stage.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'nearest' });
+      const r = frameEl.getBoundingClientRect(), top = $('.bar') ? $('.bar').offsetHeight : 0;
+      if (r.top < top - 1 || r.bottom > window.innerHeight + 1) {
+        frameEl.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: r.height + top <= window.innerHeight ? 'center' : 'start' });
+      }
     }
   }
   function flyToDistrict(key) {
@@ -975,33 +1214,10 @@ async function initMap() {
     flyTo(Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys));
   }
   function flyToPlace(id) {
-    const P = byId(id); if (!P) return;
+    const P = byId(id); if (!P || P.cat === 'sealed') return;
     if (layer !== P.layer) setLayer(P.layer);
     select('p:' + id);
     flyTo(P.x - 18, P.y - 14, P.x + 18, P.y + 14, Math.max(P.min || 0, 3));
-  }
-
-  // ---- the panel beside the map: the whole city, or all of below
-  function renderPanel() {
-    let html = '';
-    if (layer === 'surface') {
-      const open = PLACES.filter(p => p.layer === 'surface' && !p.district && !['sealed', 'file', 'gate'].includes(p.cat));
-      // the census, the districts and the places off them fold away, shut until chosen
-      const fold = (t, body) => `<details class="mp-sec"><summary class="mp-h px">${t}</summary>${body}</details>`;
-      html = `<p class="mp-k px">NOD // MAP</p><h2>Nodus</h2>${T.intro}` +
-        (T.census ? fold('CENSUS // P-1', T.census) : '') +
-        fold('DISTRICTS', btnList(Object.entries(T.districts).map(([k, d]) => ['go', k, esc(d.name.toUpperCase())]))) +
-        (open.length ? fold('THE BAY AND THE WARDS', btnList(open.map(p => ['place', p.id, p.name]))) : '');
-    } else {
-      const below = PLACES.filter(p => p.layer === 'pan');
-      html = `<p class="mp-k px">NOD // BELOW</p><h2>Under the city</h2>${T.panIntro}` +
-        `<p class="mp-h px">BELOW</p>` + btnList(below.map(p => ['place', p.id, p.name]));
-    }
-    panel.innerHTML = html;
-    fixRefs(panel);
-    initNumerals(panel);
-    $$('[data-go]', panel).forEach(b => b.addEventListener('click', () => flyToDistrict(b.dataset.go)));
-    $$('[data-place]', panel).forEach(b => b.addEventListener('click', () => flyToPlace(b.dataset.place)));
   }
 
   // ---- the key: every mark on the survey, each shown on a piece of the survey cut from the sheets
@@ -1025,9 +1241,7 @@ async function initMap() {
     node.innerHTML = `<div class="pop-head nv"><div class="pop-id"><p class="pop-k px">${layer === 'surface' ? 'NOD // SURFACE' : 'NOD // BELOW'}</p><h2 class="pop-t">The key</h2></div></div>` +
       `<nav class="mk-jump" aria-label="Parts of the key"><h2 class="px mk-h">PARTS</h2>${K.map((g, i) => `<button class="btn" type="button" data-kj="${i}">${g.h}</button>`).join('')}</nav>` +
       `<div class="mapkey">${K.map((g, i) => `<section id="mk${i}"><h3 class="px">${g.h}</h3><ul>${g.items.map(keyItem).join('')}</ul></section>`).join('')}</div>`;
-    const wasOpen = popMode === 'modal';
-    if (popMode === 'stage') closePop();
-    popMode = null;
+    const wasOpen = Modal.isOpen();
     Modal.show(node, { kicker: 'NOD // MAP // THE KEY', wide: true, key: true, push: wasOpen ? true : undefined });
     sizeKey(node);
     initNumerals(node);
@@ -1116,7 +1330,7 @@ async function initMap() {
     ladder.forEach((st, i) => { if (Math.abs(stepPd(st) - keepPd) < Math.abs(stepPd(ladder[best]) - keepPd)) best = i; });
     zi = best;
     if (sel) select(null);
-    buildOverlays(); mark(); renderPanel(); queue();
+    buildOverlays(); mark(); setListHead(); queue();
   }
   $('#lySurface').addEventListener('click', () => setLayer('surface'));
   $('#lyPan').addEventListener('click', () => setLayer('pan'));
@@ -1130,9 +1344,10 @@ async function initMap() {
     let h;
     if (full) h = Math.max(200, Math.floor(stage.clientHeight));
     else {
+      // the map fills the window under its tools: tall on a phone, wide on a desktop
       const top = stage.getBoundingClientRect().top + window.scrollY;
-      const room = window.innerHeight - Math.min(top, 260) - 20;
-      h = Math.round(Math.min(w * 0.75, Math.max(Math.min(w * 0.75, 320), room)));
+      const room = window.innerHeight - Math.min(top, 300) - 16;
+      h = Math.round(Math.max(Math.min(w * 0.75, 320), Math.min(room, Math.max(w * 1.6, 480))));
     }
     cv.width = fx.width = Math.round(w * dpr);
     cv.height = fx.height = Math.round(h * dpr);
@@ -1143,6 +1358,10 @@ async function initMap() {
     buildLadder();
     if (keep) { let best = 0; ladder.forEach((st, i) => { if (Math.abs(stepPd(st) - keep) < Math.abs(stepPd(ladder[best]) - keep)) best = i; }); zi = best; }
     labelEls.concat(pinEls).forEach(o => { o.w = 0; });
+    // the directory beside the map runs the height of the map and its tools
+    const mm = $('.map-main', shell);
+    if (mm) shell.style.setProperty('--map-h', Math.round(mm.getBoundingClientRect().height) + 'px');
+    sizeSheet();
     queue();
   }
 
@@ -1292,11 +1511,12 @@ async function initMap() {
     full = on;
     shell.classList.toggle('full', on);
     document.documentElement.classList.toggle('map-open', on);
-    $('#mzFull').textContent = on ? 'CLOSE' : 'FULL SCREEN';
     $('#mzFull').setAttribute('aria-pressed', on ? 'true' : 'false');
+    $('#mzFull').setAttribute('aria-label', on ? 'Leave full screen' : 'Full screen');
+    $('#mzFull').title = on ? 'LEAVE FULL SCREEN' : 'FULL SCREEN';
     if (!on && fullPushed && !fromNav) { fullPushed = false; history.back(); }
     if (!on) fullPushed = false;
-    if (sel) { const s = sel; closePop(); sel = s; }
+    if (sheetKind) closeSheet(true);
     const settle = () => {
       layout();
       if (on && zi === 0 && cv.height > cv.width * 1.05) {
@@ -1305,7 +1525,7 @@ async function initMap() {
         ladder.forEach((st, i) => { if (stepPd(st) <= want) best = i; });
         zi = best; queue();
       }
-      if (sel) showPop();
+      if (sel) showEntry();
       if (on) stage.focus({ preventScroll: true });
     };
     // two frames: the first lets the fixed layout take the window, the second measures it
@@ -1322,7 +1542,8 @@ async function initMap() {
   });
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || Modal.isOpen()) return;
-    if (popMode === 'stage') { select(null); return; }
+    if (sheetKind === 'list') { closeSheet(); return; }
+    if (sel) { select(null); return; }
     if (full) setFull(false);
   });
   // the phone's own bars come and go as it scrolls; follow the real height of the window
@@ -1332,8 +1553,8 @@ async function initMap() {
   // ---- go
   new IntersectionObserver(es => { vis = es[0].isIntersecting; }).observe(stage);
   layout();
-  buildOverlays(); mark(); renderPanel();
-  onResize(() => { layout(); if (sel && popMode) showPop(); });
+  buildOverlays(); mark(); buildList();
+  onResize(() => { layout(); if (sel) showEntry(); });
   if (!RM) {
     let last = 0;
     const tick = now => {
@@ -1359,6 +1580,48 @@ async function initMap() {
   }
   fromHash();
   window.addEventListener('hashchange', fromHash);
+  // the first view fills the frame: a wide map crops a little of the city's edge rather than floating small in
+  // its frame, and a tall one opens on the middle of the city with the city's height filling it
+  if (!sel && ladder.length > 1) {
+    const tall = cv.height > cv.width * 1.15;
+    const want = tall ? cv.height / WH : Math.min(cv.width / WW, cv.height / WH);
+    let best = 0;
+    ladder.forEach((st, i) => { if (Math.abs(Math.log(stepPd(st) / want)) < Math.abs(Math.log(stepPd(ladder[best]) / want))) best = i; });
+    if (!tall && stepPd(ladder[best]) > want * 1.16) best = 0;
+    zi = best; cx = WW / 2; cy = WH / 2; queue();
+  }
+  if (window.matchMedia('(pointer:coarse)').matches && !sel) {
+    showHint('TAP A PLACE\nPINCH TO ZOOM');
+    clearTimeout(hintT); hintT = setTimeout(hideHint, 3200);
+  }
+}
+
+/* strips that scroll sideways on a phone open on the part the reader is in, and keep the part in view lit */
+function initStrips() {
+  const cur = $('.subnav [aria-current]');
+  if (cur) { const nav = cur.parentElement; if (nav.scrollWidth > nav.clientWidth) nav.scrollLeft = cur.offsetLeft - (nav.clientWidth - cur.offsetWidth) / 2; }
+  const jump = $('.loc-jump');
+  if (!jump) return;
+  const links = $$('a[href^="#g-"]', jump), secs = links.map(a => document.getElementById(a.getAttribute('href').slice(1)));
+  let lit = null, q = 0;
+  const spy = () => {
+    q = 0;
+    const line = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bar')) || 52) + jump.offsetHeight + 24;
+    let i = -1;
+    secs.forEach((sec, n) => { if (sec && sec.getBoundingClientRect().top <= line) i = n; });
+    const a = links[i] || null;
+    if (a === lit) return;
+    if (lit) lit.removeAttribute('aria-current');
+    lit = a;
+    if (!a) return;
+    a.setAttribute('aria-current', 'true');
+    if (jump.scrollWidth > jump.clientWidth) {
+      const l = a.offsetLeft, r = l + a.offsetWidth;
+      if (l < jump.scrollLeft + 16 || r > jump.scrollLeft + jump.clientWidth - 16) jump.scrollTo({ left: Math.max(0, l - (jump.clientWidth - a.offsetWidth) / 2), behavior: RM ? 'auto' : 'smooth' });
+    }
+  };
+  window.addEventListener('scroll', () => { if (!q) q = requestAnimationFrame(spy); }, { passive: true });
+  spy();
 }
 
 /* ------------------------------------------------------------------ start */
@@ -1367,6 +1630,7 @@ function start() {
   initPlates();
   initRefs();
   initEntries();
+  initStrips();
   if (PAGE === 'home') { initHero(); initCovers(); }
   if (PAGE === 'files') { initCovers(); initStatic(); }
   if (PAGE === 'file') { initCovers(); initNotes(); }
