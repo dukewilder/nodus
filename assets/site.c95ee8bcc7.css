@@ -348,7 +348,7 @@ details.card > .pop .pop-head{display:none}
 }
 @media (max-width:389px){.map-shell.full .map-top .btn{padding-inline:5px}}
 .map-scale{position:absolute;left:10px;bottom:10px;display:flex;align-items:flex-end;gap:8px;color:var(--signal);background:var(--void);padding:4px 8px 4px 6px;pointer-events:none}
-.map-scale i{display:block;height:8px;border:2px solid var(--signal);border-top:0;background:linear-gradient(90deg,var(--signal) 50%,transparent 50%) 0 100%/100% 4px no-repeat}
+.map-scale i{display:block;box-sizing:border-box;height:8px;border:2px solid var(--signal);border-top:0;background:linear-gradient(90deg,var(--signal) 50%,transparent 50%) 0 100%/100% 4px no-repeat}
 .map-north{position:absolute;right:10px;bottom:10px;display:grid;justify-items:center;color:var(--grace);background:var(--void);padding:4px 8px;pointer-events:none}
 .map-north b{display:block;width:2px;height:10px;background:var(--grace);order:-1;margin-bottom:2px}
 .map-hintbox{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--void);border:2px solid var(--ichor);color:var(--ichor);padding:6px 12px;pointer-events:none;white-space:nowrap}
@@ -508,11 +508,10 @@ table.annals td:first-child{font-family:var(--px);font-size:16px;color:var(--ich
 .ixtiles{display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr))}
 @media (max-width:999px){.ixtiles{grid-template-columns:1fr 1fr}}
 @media (max-width:560px){.ixtiles{grid-template-columns:1fr;gap:10px}}
-.ixtile{display:grid;grid-template-rows:auto auto 1fr auto;gap:6px;padding:18px 18px 16px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);min-width:0;position:relative;min-height:170px;box-sizing:border-box}
+.ixtile{display:grid;grid-template-rows:auto auto 1fr;gap:6px;padding:18px 18px 16px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);min-width:0;position:relative;min-height:170px;box-sizing:border-box}
 .ixtile .n{color:var(--signal)}
 .ixtile .t{font-family:var(--bl);font-size:44px;line-height:1;color:var(--grace)}
 .ixtile .d{font-size:17px;line-height:1.45}
-.ixtile .c{color:var(--ichor);margin-top:8px}
 .ixtile::after{content:"";position:absolute;right:10px;top:10px;width:8px;height:8px;background:var(--signal)}
 @media (hover:hover){.ixtile:hover{border-color:var(--grace)}.ixtile:hover .t{color:var(--signal)}.ixtile:hover::after{background:var(--ichor)}}
 @media (max-width:560px){.ixtile{min-height:0;padding:14px 16px}.ixtile .t{font-size:36px}}
@@ -595,11 +594,12 @@ table.annals td:first-child{font-family:var(--px);font-size:16px;color:var(--ich
 .letter.kinds > h2{font-size:16px;line-height:24px;color:var(--signal);margin:0}
 .fpage .file-top{padding-top:20px}
 /* the key: each mark on a piece of the survey cut from the sheets, the survey's own marks drawn over it */
+/* the parts of the key; on a phone they ride under the bar while the list scrolls, the part in view lit */
 .mk-jump{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 24px}
 .mk-jump .btn{padding:4px 8px}
-@media (max-width:640px){.mk-jump{flex-wrap:nowrap;overflow-x:auto;margin-inline:calc(-1 * var(--gut));padding:0 var(--gut) 6px;scrollbar-width:none}.mk-jump::-webkit-scrollbar{display:none}.mk-jump .btn{flex:none}}
+@media (max-width:640px){.mk-jump{position:sticky;top:var(--mk-top,0px);z-index:1;flex-wrap:nowrap;overflow-x:auto;margin:0 calc(-1 * var(--gut)) 14px;padding:10px var(--gut);background:var(--void);scrollbar-width:none;scroll-padding-inline:var(--gut)}.mk-jump.stuck{background:var(--void) var(--dots-s) 0 100%/4px 2px repeat-x}.mk-jump::-webkit-scrollbar{display:none}.mk-jump .btn{flex:none}}
 .mapkey{display:grid;gap:28px}
-.mapkey section{scroll-margin-top:60px}
+.mapkey section{scroll-margin-top:var(--mk-off,60px)}
 .mapkey h3{margin:0 0 14px;padding-bottom:8px;color:var(--signal);font-weight:400;background:var(--dots-s) 0 100%/4px 2px repeat-x}
 .mapkey ul,.mapkey-l{list-style:none;margin:0;padding:0;display:grid;gap:16px 28px}
 @media (min-width:760px){.pop-key .mapkey ul{grid-template-columns:repeat(2,minmax(0,1fr))}}

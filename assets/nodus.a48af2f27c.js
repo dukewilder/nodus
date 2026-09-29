@@ -752,12 +752,16 @@ async function initMap() {
     const W = cv.width / dpr, H = cv.height / dpr;
     const wide = W >= 900;
     if (wide !== stage.classList.contains('wide')) { stage.classList.toggle('wide', wide); labelEls.forEach(o => { o.w = 0; }); }
-    // the scale bar
+    // the scale bar: a round distance near a seventh of the ground in view (never more than the city's width),
+    // so the same view of the city reads the same distance on any screen; the bar's outer edges span it exactly
     const mpp = KM * 1000 / P;
-    const nice = [25, 50, 100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000];
-    let m = nice[0];
-    for (const v of nice) { if (v / mpp <= Math.min(150, W * 0.3)) m = v; }
-    const bar = Math.round(m / mpp), key = m + ':' + bar;
+    const span = Math.min(WW, W / P) * KM * 1000;
+    const nice = [25, 50, 100, 250, 500, 1000, 2500, 5000, 10000];
+    let j = 0;
+    nice.forEach((v, i) => { if (v <= span * 0.15) j = i; });
+    while (j > 0 && nice[j] / mpp > W * 0.3) j--;
+    while (j < nice.length - 1 && nice[j] / mpp < 36 && nice[j + 1] / mpp <= W * 0.3) j++;
+    const m = nice[j], bar = Math.round(m / mpp), key = m + ':' + bar;
     if (key !== scaleKey) {
       scaleKey = key;
       $('i', scaleEl).style.width = bar + 'px';
@@ -1019,10 +1023,57 @@ async function initMap() {
     Modal.show(node, { kicker: 'NOD // MAP // THE KEY', wide: true, push: wasOpen ? true : undefined });
     sizeKey(node);
     initNumerals(node);
-    $$('[data-kj]', node).forEach(b => b.addEventListener('click', () => {
-      const sec = $('#mk' + b.dataset.kj, node);
-      if (sec) sec.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'start' });
+    // on a phone the parts of the key stay under the bar while the list scrolls; the part in view is lit
+    const card = node.closest('.modal-card'), nav = $('.mk-jump', node);
+    const btns = $$('[data-kj]', node), secs = $$('.mapkey section', node);
+    if (!card || !nav) return;
+    const mbar = $('.modal-bar', card);
+    let off = 60, lit = -1, held = -1, q = 0, sticky = false;
+    // listeners on the card and the window let go of themselves once the key is closed
+    const on = (t, ev, fn, o) => { const h = e => { if (!node.isConnected) { t.removeEventListener(ev, h, o); return; } fn(e); }; t.addEventListener(ev, h, o); };
+    const light = i => {
+      if (i === lit) return;
+      lit = i;
+      btns.forEach((b, n) => { if (n === i) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current'); });
+      const b = btns[i];
+      if (b && nav.scrollWidth > nav.clientWidth + 1) {
+        const l = b.offsetLeft, r = l + b.offsetWidth, pad = 16;
+        if (l - pad < nav.scrollLeft || r + pad > nav.scrollLeft + nav.clientWidth) {
+          nav.scrollTo({ left: Math.max(0, l - (nav.clientWidth - b.offsetWidth) / 2), behavior: RM ? 'auto' : 'smooth' });
+        }
+      }
+    };
+    const spy = () => {
+      const edge = card.getBoundingClientRect().top + card.clientTop;
+      nav.classList.toggle('stuck', sticky && card.scrollTop > 0 && nav.getBoundingClientRect().top <= edge + (mbar ? mbar.offsetHeight : 0) + 0.5);
+      if (held >= 0) { light(held); return; }
+      const line = edge + off + 1;
+      let i = 0;
+      secs.forEach((s, n) => { if (s.getBoundingClientRect().top <= line) i = n; });
+      if (card.scrollTop > 0 && card.scrollTop + card.clientHeight >= card.scrollHeight - 2) i = secs.length - 1;
+      light(i);
+    };
+    const fit = () => {
+      const top = mbar ? mbar.offsetHeight : 0;
+      sticky = getComputedStyle(nav).position === 'sticky';
+      off = top + (sticky ? nav.offsetHeight : 0) + 12;
+      node.style.setProperty('--mk-top', top + 'px');
+      node.style.setProperty('--mk-off', off + 'px');
+      spy();
+    };
+    on(card, 'scroll', () => { if (!q) q = requestAnimationFrame(() => { q = 0; spy(); }); }, { passive: true });
+    // a chosen part stays lit until the reader scrolls on their own
+    const letGo = e => { if (held >= 0 && !(e.target.closest && e.target.closest('.mk-jump'))) held = -1; };
+    for (const ev of ['wheel', 'touchstart', 'keydown']) on(card, ev, letGo, { passive: true });
+    on(window, 'resize', fit);
+    btns.forEach((b, n) => b.addEventListener('click', () => {
+      const sec = secs[n];
+      if (!sec) return;
+      held = n;
+      light(n);
+      sec.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'start' });
     }));
+    fit();
   }
   $('#mapKey').addEventListener('click', showKey);
 
