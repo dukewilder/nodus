@@ -594,10 +594,15 @@ table.annals td:first-child{font-family:var(--px);font-size:16px;color:var(--ich
 .letter.kinds > h2{font-size:16px;line-height:24px;color:var(--signal);margin:0}
 .fpage .file-top{padding-top:20px}
 /* the key: each mark on a piece of the survey cut from the sheets, the survey's own marks drawn over it */
-/* the parts of the key; on a phone they ride under the bar while the list scrolls, the part in view lit */
-.mk-jump{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 24px}
-.mk-jump .btn{padding:4px 8px}
-@media (max-width:640px){.mk-jump{position:sticky;top:var(--mk-top,0px);z-index:1;flex-wrap:nowrap;overflow-x:auto;margin:0 calc(-1 * var(--gut)) 14px;padding:10px var(--gut);background:var(--void);scrollbar-width:none;scroll-padding-inline:var(--gut)}.mk-jump.stuck{background:var(--void) var(--dots-s) 0 100%/4px 2px repeat-x}.mk-jump::-webkit-scrollbar{display:none}.mk-jump .btn{flex:none}}
+/* the parts of the key follow the list as it scrolls, the part in view lit: a strip under the bar, and on a wide
+   screen a column beside the list, the way the Record keeps its chapters */
+.mk-jump{position:sticky;top:var(--mk-top,0px);z-index:1;display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;margin:0 -24px 14px;padding:10px 24px;background:var(--void);scrollbar-width:none;scroll-padding-inline:24px}
+.mk-jump::-webkit-scrollbar{display:none}
+.mk-jump.stuck{background:var(--void) var(--dots-s) 0 100%/4px 2px repeat-x}
+.mk-jump .btn{flex:none;padding:4px 8px}
+.mk-jump .mk-h{display:none}
+@media (max-width:640px){.mk-jump{margin:0 calc(-1 * var(--gut)) 14px;padding:10px var(--gut);scroll-padding-inline:var(--gut)}}
+@media (min-width:1120px){.modal-card.keyw{width:min(1160px,100%)}.pop-key{display:grid;grid-template-columns:220px minmax(0,1fr);column-gap:40px;align-items:start}.pop-key > .pop-head{grid-column:1 / -1}.mk-jump{top:calc(var(--mk-top,0px) + 16px);flex-direction:column;gap:2px;overflow:auto;max-height:calc(100vh - 150px);margin:0;padding:0;background:none;scrollbar-width:thin}.mk-jump .mk-h{display:block;margin:0 0 10px;color:var(--signal);font-weight:400;font-size:16px;line-height:24px}.mk-jump .btn{border:0;padding:5px 6px;white-space:normal;text-align:left;color:var(--grace);background:none}.mk-jump .btn:hover{background:var(--signal);color:var(--void)}.mk-jump .btn[aria-current]{background:var(--grace);color:var(--void)}}
 .mapkey{display:grid;gap:28px}
 .mapkey section{scroll-margin-top:var(--mk-off,60px)}
 .mapkey h3{margin:0 0 14px;padding-bottom:8px;color:var(--signal);font-weight:400;background:var(--dots-s) 0 100%/4px 2px repeat-x}

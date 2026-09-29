@@ -445,6 +445,7 @@ const Modal = (() => {
     kick.textContent = opts.kicker || '';
     card.classList.toggle('wide', !!opts.wide);
     card.classList.toggle('low', !!opts.low);
+    card.classList.toggle('keyw', !!opts.key);
     const t = $('.pop-t, h2', body);
     if (t) { t.id = 'modalT'; card.setAttribute('aria-labelledby', 'modalT'); } else card.removeAttribute('aria-labelledby');
     const url = opts.hash ? location.pathname + location.search + opts.hash : location.pathname + location.search;
@@ -1015,48 +1016,57 @@ async function initMap() {
     const node = document.createElement('div');
     node.className = 'pop pop-key';
     node.innerHTML = `<div class="pop-head nv"><div class="pop-id"><p class="pop-k px">${layer === 'surface' ? 'NOD // SURFACE' : 'NOD // BELOW'}</p><h2 class="pop-t">The key</h2></div></div>` +
-      `<nav class="mk-jump" aria-label="Parts of the key">${K.map((g, i) => `<button class="btn" type="button" data-kj="${i}">${g.h}</button>`).join('')}</nav>` +
+      `<nav class="mk-jump" aria-label="Parts of the key"><h2 class="px mk-h">PARTS</h2>${K.map((g, i) => `<button class="btn" type="button" data-kj="${i}">${g.h}</button>`).join('')}</nav>` +
       `<div class="mapkey">${K.map((g, i) => `<section id="mk${i}"><h3 class="px">${g.h}</h3><ul>${g.items.map(keyItem).join('')}</ul></section>`).join('')}</div>`;
     const wasOpen = popMode === 'modal';
     if (popMode === 'stage') closePop();
     popMode = null;
-    Modal.show(node, { kicker: 'NOD // MAP // THE KEY', wide: true, push: wasOpen ? true : undefined });
+    Modal.show(node, { kicker: 'NOD // MAP // THE KEY', wide: true, key: true, push: wasOpen ? true : undefined });
     sizeKey(node);
     initNumerals(node);
-    // on a phone the parts of the key stay under the bar while the list scrolls; the part in view is lit
+    // the parts of the key follow the list, the part in view lit: a strip under the bar, or on a wide screen a column
     const card = node.closest('.modal-card'), nav = $('.mk-jump', node);
     const btns = $$('[data-kj]', node), secs = $$('.mapkey section', node);
     if (!card || !nav) return;
     const mbar = $('.modal-bar', card);
-    let off = 60, lit = -1, held = -1, q = 0, sticky = false;
+    let off = 60, lit = -1, held = -1, q = 0, strip = false;
     // listeners on the card and the window let go of themselves once the key is closed
     const on = (t, ev, fn, o) => { const h = e => { if (!node.isConnected) { t.removeEventListener(ev, h, o); return; } fn(e); }; t.addEventListener(ev, h, o); };
     const light = i => {
       if (i === lit) return;
       lit = i;
       btns.forEach((b, n) => { if (n === i) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current'); });
-      const b = btns[i];
-      if (b && nav.scrollWidth > nav.clientWidth + 1) {
+      // keep the lit part in sight within the strip or the column
+      const b = btns[i], how = RM ? 'auto' : 'smooth';
+      if (!b) return;
+      if (nav.scrollWidth > nav.clientWidth + 1) {
         const l = b.offsetLeft, r = l + b.offsetWidth, pad = 16;
         if (l - pad < nav.scrollLeft || r + pad > nav.scrollLeft + nav.clientWidth) {
-          nav.scrollTo({ left: Math.max(0, l - (nav.clientWidth - b.offsetWidth) / 2), behavior: RM ? 'auto' : 'smooth' });
+          nav.scrollTo({ left: Math.max(0, l - (nav.clientWidth - b.offsetWidth) / 2), behavior: how });
+        }
+      } else if (nav.scrollHeight > nav.clientHeight + 1) {
+        const t = b.offsetTop, bt = t + b.offsetHeight, pad = 8;
+        if (t - pad < nav.scrollTop || bt + pad > nav.scrollTop + nav.clientHeight) {
+          nav.scrollTo({ top: Math.max(0, t - (nav.clientHeight - b.offsetHeight) / 2), behavior: how });
         }
       }
     };
     const spy = () => {
       const edge = card.getBoundingClientRect().top + card.clientTop;
-      nav.classList.toggle('stuck', sticky && card.scrollTop > 0 && nav.getBoundingClientRect().top <= edge + (mbar ? mbar.offsetHeight : 0) + 0.5);
+      nav.classList.toggle('stuck', strip && card.scrollTop > 0 && nav.getBoundingClientRect().top <= edge + (mbar ? mbar.offsetHeight : 0) + 0.5);
       if (held >= 0) { light(held); return; }
+      // the part in view is the first one the reader has not scrolled past
       const line = edge + off + 1;
-      let i = 0;
-      secs.forEach((s, n) => { if (s.getBoundingClientRect().top <= line) i = n; });
+      let i = secs.length - 1;
+      for (let n = 0; n < secs.length; n++) { if (secs[n].getBoundingClientRect().bottom > line) { i = n; break; } }
       if (card.scrollTop > 0 && card.scrollTop + card.clientHeight >= card.scrollHeight - 2) i = secs.length - 1;
       light(i);
     };
     const fit = () => {
       const top = mbar ? mbar.offsetHeight : 0;
-      sticky = getComputedStyle(nav).position === 'sticky';
-      off = top + (sticky ? nav.offsetHeight : 0) + 12;
+      const cs = getComputedStyle(nav);
+      strip = cs.position === 'sticky' && cs.flexDirection !== 'column';
+      off = top + (strip ? nav.offsetHeight : 0) + 12;
       node.style.setProperty('--mk-top', top + 'px');
       node.style.setProperty('--mk-off', off + 'px');
       spy();
@@ -1066,6 +1076,14 @@ async function initMap() {
     const letGo = e => { if (held >= 0 && !(e.target.closest && e.target.closest('.mk-jump'))) held = -1; };
     for (const ev of ['wheel', 'touchstart', 'keydown']) on(card, ev, letGo, { passive: true });
     on(window, 'resize', fit);
+    // a mouse wheel over the strip moves it sideways
+    nav.addEventListener('wheel', e => {
+      const max = nav.scrollWidth - nav.clientWidth;
+      if (max <= 1 || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      if ((e.deltaY > 0 && nav.scrollLeft >= max - 1) || (e.deltaY < 0 && nav.scrollLeft <= 0)) return;
+      nav.scrollLeft += e.deltaY * (e.deltaMode === 1 ? 16 : 1);
+      e.preventDefault();
+    }, { passive: false });
     btns.forEach((b, n) => b.addEventListener('click', () => {
       const sec = secs[n];
       if (!sec) return;
