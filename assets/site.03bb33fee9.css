@@ -9,6 +9,8 @@
   --gut:16px;--max:1216px;--bar:52px;
   --d25s:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' shape-rendering='crispEdges' fill='%2338D0DA'%3E%3Crect x='0' y='0' width='2' height='2'/%3E%3Crect x='4' y='4' width='2' height='2'/%3E%3Crect x='4' y='0' width='2' height='2'/%3E%3Crect x='0' y='4' width='2' height='2'/%3E%3C/svg%3E");
   --d12s:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' shape-rendering='crispEdges' fill='%2338D0DA'%3E%3Crect x='0' y='0' width='2' height='2'/%3E%3Crect x='4' y='4' width='2' height='2'/%3E%3C/svg%3E");
+  --d25v:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' shape-rendering='crispEdges' fill='%230D0221'%3E%3Crect x='0' y='0' width='2' height='2'/%3E%3Crect x='4' y='4' width='2' height='2'/%3E%3Crect x='4' y='0' width='2' height='2'/%3E%3Crect x='0' y='4' width='2' height='2'/%3E%3C/svg%3E");
+  --d12v:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' shape-rendering='crispEdges' fill='%230D0221'%3E%3Crect x='0' y='0' width='2' height='2'/%3E%3Crect x='4' y='4' width='2' height='2'/%3E%3C/svg%3E");
   --d50g:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' shape-rendering='crispEdges' fill='%23D6F6FC'%3E%3Crect x='0' y='0' width='2' height='2'/%3E%3Crect x='2' y='2' width='2' height='2'/%3E%3C/svg%3E");
   --d50s:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' shape-rendering='crispEdges' fill='%2338D0DA'%3E%3Crect x='0' y='0' width='2' height='2'/%3E%3Crect x='2' y='2' width='2' height='2'/%3E%3C/svg%3E");
   --d50v:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' shape-rendering='crispEdges' fill='%230D0221'%3E%3Crect x='0' y='0' width='2' height='2'/%3E%3Crect x='2' y='2' width='2' height='2'/%3E%3C/svg%3E");
@@ -111,19 +113,19 @@ canvas{display:block}
 .rec.off{background:var(--void)}
 
 /* ------------------------------------------------------------------ mirrors */
-.mirrors{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
-.mirror{display:grid;gap:4px;padding:18px 18px 16px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);background:var(--void);min-width:0;position:relative}
-.mirror::after{content:"";position:absolute;right:10px;top:10px;width:8px;height:8px;background:var(--ichor)}
-.mirror .m-n{font-family:var(--px);font-size:24px;line-height:32px;-webkit-font-smoothing:none;min-width:0;overflow-wrap:anywhere}
-.mirror .m-h{font-family:var(--px);font-size:16px;line-height:24px;color:var(--signal);-webkit-font-smoothing:none;overflow-wrap:anywhere}
-@media (hover:hover){.mirror:hover{background:var(--signal);color:var(--void)}.mirror:hover .m-h{color:var(--void)}.mirror:hover::after{background:var(--void)}}
-.mirror:active{background:var(--signal);color:var(--void)}
-/* YouTube leads: first in the row on a desktop, the same size as the rest; on a phone it takes the full width */
-@media (max-width:939px){.mirror.main{grid-column:1/-1;padding:22px 22px 20px}.mirror.main .m-n{font-size:40px;line-height:48px}}
-@media (max-width:600px){.mirror.main{padding:14px 14px 12px}.mirror.main .m-n{font-size:32px;line-height:40px}}
-@media (max-width:1139px) and (min-width:940px){.mirror{padding:14px 12px 12px}.mirror .m-n{font-size:16px;line-height:24px}.mirror .m-h{font-size:12px;line-height:16px}}
-@media (max-width:939px){.mirrors{grid-template-columns:1fr 1fr}}
-@media (max-width:600px){.mirrors{grid-template-columns:1fr;gap:10px}.mirror{padding:12px 14px 10px;gap:0}}
+/* the platforms: each one's name in the pixel face over a dithered glow, its record light set in the glow. Six across on a
+   desktop, three on a tablet, two on a phone; the name steps down a size wherever the tile runs narrow */
+.mirrors{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.mirror{box-sizing:border-box;display:flex;align-items:center;justify-content:center;height:80px;padding:0 8px 12px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);background-color:var(--void);background-image:var(--d25s),var(--d12s);background-size:8px 8px,8px 8px;background-repeat:repeat-x,repeat-x;background-position:left bottom,left calc(100% - 8px);min-width:0;position:relative}
+.mirror::after{content:"";position:absolute;right:8px;bottom:4px;width:8px;height:8px;background:var(--ichor)}
+.mirror .m-n{font-family:var(--px);font-size:24px;line-height:32px;white-space:nowrap;-webkit-font-smoothing:none}
+@media (hover:hover){.mirror:hover{background-color:var(--signal);background-image:var(--d25v),var(--d12v);color:var(--void)}.mirror:hover::after{background:var(--void);animation:blink 1s steps(1,end) infinite}}
+.mirror:active{background-color:var(--signal);background-image:var(--d25v),var(--d12v);color:var(--void)}
+@keyframes blink{50%{visibility:hidden}}
+@media (max-width:1239px){.mirror .m-n{font-size:16px;line-height:24px}}
+@media (max-width:939px){.mirrors{grid-template-columns:repeat(3,minmax(0,1fr))}.mirror{height:64px}.mirror .m-n{font-size:24px;line-height:32px}}
+@media (max-width:600px){.mirrors{grid-template-columns:1fr 1fr;gap:10px}}
+@media (max-width:429px){.mirror{height:56px}.mirror .m-n{font-size:16px;line-height:24px}}
 
 /* ------------------------------------------------------------------ home */
 .home-sec{padding-top:72px}
