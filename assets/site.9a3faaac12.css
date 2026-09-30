@@ -799,10 +799,10 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
 .lcards.gates{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
 @media (max-width:560px){.lcards,.lcards.gates{grid-template-columns:minmax(0,1fr);gap:10px}}
 .loc{display:grid;grid-template-rows:1fr auto;min-width:0;border:2px solid var(--signal);background:var(--void)}
-.loc > .card > summary{border:0;height:auto;display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start;padding:14px 38px 10px 14px}
-.loc-p{padding:4px}
+.loc > .card > summary{border:0;height:auto;display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;padding:14px 38px 10px 14px}
+.loc-p{padding:4px;flex:none}
 .loc-p canvas{width:80px;height:80px}
-.loc-id{display:grid;gap:4px;min-width:0;align-content:start}
+.loc-id{display:grid;gap:4px;flex:1 1 0;min-width:144px;align-content:start}
 .loc-k{color:var(--signal);font-size:8px;line-height:12px;overflow-wrap:anywhere}
 .loc-n{margin:0;font-weight:400;color:var(--grace);overflow-wrap:anywhere}
 .loc-d{font-size:17px;line-height:1.45;color:var(--grace);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;line-clamp:4;overflow:hidden}
