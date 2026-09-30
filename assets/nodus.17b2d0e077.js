@@ -1116,11 +1116,20 @@ async function initMap() {
     else { msBody.replaceChildren(entryEl); entryEl.hidden = false; }
     sheet.hidden = false;
     sheet.classList.toggle('lst', kind === 'list');
-    $('#msPos').textContent = kind === 'list' ? 'ALL PLACES' : posOf(sel, true);
     $('#msPrev').hidden = $('#msNext').hidden = $('#msMore').hidden = kind === 'list';
+    fitPos();
     $('#mapList').setAttribute('aria-pressed', kind === 'list' ? 'true' : 'false');
     setBig(kind === 'list');
     msBody.scrollTop = 0;
+  }
+  // the place's number in its group, shortened when a narrow phone has no room for it whole
+  function fitPos() {
+    const p = $('#msPos');
+    if (!sheetKind) return;
+    const whole = sheetKind === 'list' ? 'ALL PLACES' : posOf(sel, true);
+    p.textContent = whole;
+    if (p.scrollWidth > p.clientWidth) p.textContent = whole.replace(' OF ', '/');
+    if (p.scrollWidth > p.clientWidth) p.textContent = '';
   }
   function setBig(on) {
     sheetBig = on;
@@ -1133,6 +1142,7 @@ async function initMap() {
   }
   function sizeSheet() {
     if (!sheetKind) { sheetPx = 0; stage.style.setProperty('--sheet', '0px'); return; }
+    fitPos();
     const H = stage.clientHeight;
     sheet.style.height = '';
     const h = sheetBig ? H : Math.min(Math.round(H * 0.46), sheet.scrollHeight);
