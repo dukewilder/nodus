@@ -55,7 +55,6 @@ canvas{display:block}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;white-space:nowrap;color:var(--signal)}
 .brand svg{display:block;width:32px;height:32px;flex:none;shape-rendering:crispEdges}
 .brand b{font-weight:400;color:var(--ichor)}
-.brand span{color:var(--signal)}
 .brand:hover b{color:var(--grace)}
 .links{display:flex;gap:4px;margin-left:auto}
 .links a{color:var(--signal);text-decoration:none;padding:6px 10px;white-space:nowrap}
@@ -64,7 +63,7 @@ canvas{display:block}
 @media (max-width:759px){
   :root{--bar:48px}
   .brand{gap:0}
-  .brand b,.brand span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .brand b{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .bar-in{gap:10px}
   .links{flex:1;justify-content:space-between;margin-left:0;gap:0}
   .links a{padding:12px 6px}
@@ -107,10 +106,6 @@ canvas{display:block}
 /* ------------------------------------------------------------------ hero */
 .hero{position:relative;background:var(--void);overflow:hidden}
 .hero canvas{position:absolute;left:0;top:0}
-.hero-hud{position:absolute;left:var(--gut);top:16px;display:flex;flex-direction:column;align-items:flex-start}
-.hud-line{background:var(--void);color:var(--signal);padding:0 4px}
-.rec{display:inline-block;width:8px;height:8px;background:var(--ichor);margin:0 8px 2px;vertical-align:middle}
-.rec.off{background:var(--void)}
 
 /* ------------------------------------------------------------------ mirrors */
 /* the platforms: each one's name in the pixel face over a dithered glow, its record light set in the glow. Six across on a

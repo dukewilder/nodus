@@ -1,6 +1,6 @@
 # NODUS
 
-Recovered files from Nodus.
+The sky opened over Nodus at 03:12 in the morning.
 
 The archive: https://nodusarchive.net/
 
@@ -9,5 +9,4 @@ The archive: https://nodusarchive.net/
 - Instagram: https://www.instagram.com/nodus.archive/
 - Facebook: https://www.facebook.com/nodus.archive
 - X: https://x.com/nodus_archive
-
-seam recovery
+- Discord: https://discord.gg/49Y3TXXwXm

@@ -1,7 +1,7 @@
 {
  "name": "NODUS",
  "short_name": "NODUS",
- "description": "Recovered files from Nodus.",
+ "description": "The sky opened over Nodus at 03:12 in the morning.",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
