@@ -1047,7 +1047,7 @@ async function initMap() {
     if (!h) return;
     h.innerHTML = layer === 'surface'
       ? `<p class="mp-k px">NOD // MAP</p><h2>Nodus</h2><div class="mp-intro">${T.intro}</div>` +
-        (T.census ? `<details class="mp-sec"><summary class="mp-h px">CENSUS // P-1</summary>${T.census}</details>` : '')
+        (T.census ? `<details class="mp-sec"><summary class="mp-h px">CENSUS // P-1 // NOW</summary>${T.census}</details>` : '')
       : `<p class="mp-k px">NOD // BELOW</p><h2>Under the city</h2><div class="mp-intro">${T.panIntro}</div>`;
     fixRefs(h);
     initNumerals(h);
