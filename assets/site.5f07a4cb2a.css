@@ -929,7 +929,7 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
 .gb-verses{margin:0 0 26px}
 .v{margin:0 0 12px;break-inside:avoid}
 .v .vn{color:var(--signal);font-size:16px;margin-right:8px;-webkit-font-smoothing:none}
-.v .vk{color:var(--ichor);font-size:12px;line-height:16px;margin-right:8px;vertical-align:2px;letter-spacing:.04em;white-space:nowrap}
+.v .vk{color:var(--ichor);font-size:8px;line-height:12px;margin-right:8px;vertical-align:3px;white-space:nowrap}
 .v.logged .vk{color:var(--signal)}
 .vt-f,.vt-b,.vt-r{display:none}
 .gb[data-mode="first"] .vt-f,.gb[data-mode="both"] .vt-b,.gb[data-mode="received"] .vt-r{display:inline}
@@ -966,7 +966,7 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
 .gb.on:not(.single) .gb-paper.l::after{content:"";position:absolute;top:0;bottom:0;right:0;width:12px;background:var(--d25s);background-size:8px 8px}
 .gb.on:not(.single) .gb-paper.r::before{content:"";position:absolute;top:0;bottom:0;left:0;width:12px;background:var(--d12s);background-size:8px 8px}
 .gb.on:not(.single) .gb-paper.r::after{content:"";position:absolute;top:0;bottom:0;left:-1px;width:2px;background:linear-gradient(var(--signal) 2px,transparent 2px) 0 0/2px 4px}
-.gb-run{position:absolute;top:13px;left:var(--m);right:var(--m);color:var(--signal);font-size:12px;line-height:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-font-smoothing:none}
+.gb-run{position:absolute;top:15px;left:var(--m);right:var(--m);color:var(--signal);font-size:8px;line-height:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-font-smoothing:none}
 .gb-paper.r .gb-run{text-align:right}
 .gb-fol{position:absolute;bottom:12px;left:var(--m);color:var(--signal);font-size:16px;line-height:20px;-webkit-font-smoothing:none}
 .gb-paper.r .gb-fol{left:auto;right:var(--m)}
@@ -1008,7 +1008,8 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
   .gb-at{min-width:0;font-size:16px}
 }
 @media (max-width:399px){
-  .gb-modes button{padding:6px 5px;font-size:14px}
+  .gb-modes button{padding:6px 7px}
+  .gb-w{display:none}
   .gb-ctl-r .btn{padding:6px 6px}
 }
 @media (prefers-reduced-motion:reduce){.gb-lf{display:none}}
