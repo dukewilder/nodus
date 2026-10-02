@@ -306,7 +306,8 @@ html.modal-open{overflow:hidden}
 .pop-vis.sig{border:0;padding:0}
 .pop-vis .sigil.sealed{width:96px;height:96px}
 .pop-k{margin:0;color:var(--signal)}
-.pop-t{margin:4px 0 0;font-family:var(--bl);font-weight:400;font-size:46px;line-height:1.02;color:var(--grace);text-wrap:balance}
+.pop-id{min-width:0;container-type:inline-size}
+.pop-t{margin:4px 0 0;font-family:var(--bl);font-weight:400;font-size:46px;font-size:min(46px,13.6cqi);line-height:1.02;color:var(--grace);text-wrap:balance}
 .pop-t.h{font-family:var(--px);font-size:32px;line-height:40px;color:var(--ichor);-webkit-font-smoothing:none}
 .pop-t.sc{font-family:var(--fellsc);font-size:34px;line-height:1.12}
 .pop-t.pt{font-family:var(--px);font-size:32px;line-height:40px;-webkit-font-smoothing:none}
