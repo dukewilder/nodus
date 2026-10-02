@@ -771,6 +771,7 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
   table.beats td,table.annals td{display:block;padding:0;background:none}
   table.beats td:first-child,table.annals td:first-child{white-space:normal;margin-bottom:10px}
   table.beats td + td,table.annals td + td{margin-top:10px}
+  table.beats td:empty,table.annals td:empty{display:none}
   table.beats td[data-l]::before,table.annals td[data-l]::before{content:attr(data-l);display:block;font-family:var(--px);font-size:16px;line-height:24px;font-style:normal;text-transform:uppercase;color:var(--signal);-webkit-font-smoothing:none;margin-bottom:2px}
   .tc{white-space:normal;text-align:left;overflow-wrap:anywhere}
 }
