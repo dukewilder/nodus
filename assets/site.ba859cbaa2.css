@@ -268,9 +268,14 @@ html.fv-open{overflow:hidden}
 .fv-ctl .fv-play{min-width:96px}
 @media (max-width:400px){.lb.fv{gap:8px}.fv-nk{display:none}.fv-ctl{gap:6px}.fv-ctl .btn,.fv-top .btn{padding-left:8px;padding-right:8px}.fv-ctl .fv-play{min-width:88px}}
 @media (orientation:landscape) and (min-width:600px){
-  .lb.fv{grid-template-columns:minmax(0,1fr) var(--fvw,180px) minmax(280px,380px) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto auto minmax(0,1fr);grid-template-areas:". stage . ." ". stage top ." ". stage info ." ". stage . .";column-gap:24px;row-gap:16px}
-  .fv-top{flex-wrap:wrap;max-width:none}
-  .fv-k{display:block;flex:1 0 100%}
+  .lb.fv{grid-template-columns:minmax(0,1fr) var(--fvw,180px) minmax(280px,470px) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto auto minmax(0,1fr);grid-template-areas:". stage . ." ". stage top ." ". stage info ." ". stage . .";column-gap:24px;row-gap:16px}
+  /* the file and CLOSE on the first line, the frame, the speed and the sound under them */
+  .fv-top{display:grid;grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"k k x" "n s v";gap:10px 8px;max-width:none}
+  .fv-k{display:block;grid-area:k;align-self:center}
+  .fv-n{grid-area:n;margin:0}
+  #fvSpeed{grid-area:s}
+  #fvSound{grid-area:v}
+  #lbClose{grid-area:x;justify-self:end}
   .fv-info{max-width:none}
   .fv-t{display:block}
 }
@@ -311,6 +316,12 @@ html.modal-open{overflow:hidden}
 .pop-h{margin:18px 0 6px;color:var(--signal)}
 .pop .acts{margin-top:22px}
 .pop .dlist{margin-top:4px}
+/* a company's dossier, between its head and its story */
+.dossier{display:grid;gap:8px;margin:0 0 22px;padding:12px 0;border-top:2px solid var(--signal);border-bottom:2px solid var(--signal)}
+.ds-r{display:grid;grid-template-columns:96px minmax(0,1fr);column-gap:16px;align-items:baseline}
+.dossier dt{margin:0;color:var(--signal);white-space:nowrap}
+.dossier dd{margin:0;color:var(--grace);font-size:17px;line-height:1.45}
+@media (max-width:480px){.ds-r{grid-template-columns:minmax(0,1fr);row-gap:2px}}
 @media (max-width:640px){.pop-head{grid-template-columns:minmax(0,1fr);gap:14px}.pop-t{font-size:38px}.pop-t.sc{font-size:30px}.pop-t.pt{font-size:24px;line-height:32px}}
 /* an entry's popup, read in place when there is no script */
 details.card > summary{list-style:none;cursor:pointer}
