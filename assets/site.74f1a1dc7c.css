@@ -79,7 +79,6 @@ canvas{display:block}
   .links{flex:1;justify-content:space-between;margin-left:0;gap:0}
   .links a{padding:12px 6px}
   .thm{padding:12px 2px 12px 6px}
-  .thm-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 }
 @media (max-width:399px){.bar-in{gap:6px}.links a{padding:12px 4px}}
 @media (max-width:359px){.bar-in{gap:4px;padding-inline:8px}.brand svg{width:20px;height:20px}.links a{padding:12px 3px}.thm{padding:12px 0 12px 2px}.thm svg{width:20px;height:20px}}

@@ -2375,7 +2375,7 @@ function nightPlayer(btn0, AC, SRCS) {
   function show() {
     btn.setAttribute('aria-pressed', String(want));
     btn.classList.toggle('wait', want && waiting);
-    btn.title = want ? 'The NODUS theme: on' : 'The NODUS theme: off';
+    btn.title = want ? 'Music: on' : 'Music: off';
   }
   // where the loop is, on its own minute
   function pos() {
