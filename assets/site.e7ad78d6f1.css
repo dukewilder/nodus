@@ -353,8 +353,8 @@ html.modal-open{overflow:hidden}
 .pop .dlist{margin-top:4px}
 /* a company's dossier, between its head and its story */
 .dossier{display:grid;gap:8px;margin:0 0 22px;padding:12px 0;border-top:2px solid var(--signal);border-bottom:2px solid var(--signal)}
-.ds-r{display:grid;grid-template-columns:96px minmax(0,1fr);column-gap:16px;align-items:baseline}
-.dossier dt{margin:0;color:var(--signal);white-space:nowrap}
+.ds-r{display:grid;grid-template-columns:116px minmax(0,1fr);column-gap:16px;align-items:baseline}
+.dossier dt{margin:0;color:var(--signal)}
 .dossier dd{margin:0;color:var(--grace);font-size:17px;line-height:1.45}
 @media (max-width:480px){.ds-r{grid-template-columns:minmax(0,1fr);row-gap:2px}}
 @media (max-width:640px){.pop-head{grid-template-columns:minmax(0,1fr);gap:14px}.pop-t{font-size:38px}.pop-t.sc{font-size:30px}.pop-t.pt{font-size:24px;line-height:32px}}
