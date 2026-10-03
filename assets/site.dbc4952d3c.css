@@ -140,18 +140,27 @@ canvas{display:block}
 .home-sec.first{padding-top:44px}
 @media (max-width:759px){.home-sec{padding-top:52px}.home-sec.first{padding-top:32px}}
 .kick{margin:0 0 16px;color:var(--signal)}
-.doors{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:1fr;gap:12px}
-/* five doors of one size, each under its mark: the files, the survey, the Record, the index and the book */
-.door{display:grid;grid-template-rows:auto auto 1fr auto;gap:8px;padding:18px 18px 16px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);background:var(--void);min-width:0;position:relative;container-type:inline-size}
+.doors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;container-type:inline-size}
+/* four doors of one size, each under its mark, one to each section of the bar: the files, the survey, the Record
+   and the index. The doors of a row share its rows, so each title, line and count stands level with its neighbours' */
+.door{display:grid;grid-row:span 4;grid-template-rows:subgrid;row-gap:8px;padding:18px 18px 16px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);background:var(--void);min-width:0;position:relative}
+@supports not (grid-template-rows:subgrid){.door{grid-row:auto;grid-template-rows:auto auto 1fr auto}}
 .door::after{content:"";position:absolute;right:10px;top:10px;width:8px;height:8px;background:var(--signal)}
 .door canvas.sigil{width:96px;height:96px;margin:0 0 6px}
-.door-t{font-family:var(--bl);font-size:36px;font-size:min(36px,15.2cqi);line-height:1.02;color:var(--grace);text-wrap:balance}
+.door-t{font-family:var(--bl);font-size:36px;font-size:min(36px,calc(3.8cqi - 7.5px));line-height:1.02;color:var(--grace);text-wrap:balance;align-self:end}
 .door-d{font-size:17px;line-height:1.45}
-.door-c{color:var(--ichor);margin-top:8px}
+.door-c{color:var(--ichor);margin-top:8px;align-self:end}
 @media (hover:hover){.door:hover{border-color:var(--grace)}.door:hover::after{background:var(--ichor)}.door:hover .door-t{color:var(--signal)}}
-@media (max-width:1099px){.doors{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:759px){.doors{grid-template-columns:1fr 1fr}}
-@media (max-width:520px){.doors{grid-template-columns:1fr;gap:10px}.door{grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:16px;row-gap:6px;padding:16px 16px 14px;align-items:start}.door canvas.sigil{margin:2px 0 0;grid-row:1 / span 3}.door-t{font-size:32px}.door-d,.door-c{grid-column:2}.door-c{margin:2px 0 0}}
+@media (max-width:899px){.doors{grid-template-columns:repeat(2,minmax(0,1fr))}.door-t{font-size:min(36px,calc(7.6cqi - 7px))}}
+/* on a phone each door is a row: its title, line and count, with its mark beside them on the right */
+@media (max-width:560px){
+  .doors{grid-template-columns:1fr;gap:10px}
+  .door{--sig:72px;grid-row:auto;grid-template-rows:auto auto auto;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"t s" "d s" "c s";column-gap:16px;row-gap:6px;padding:16px 16px 14px}
+  .door canvas.sigil{grid-area:s;align-self:center;width:72px;height:72px;margin:8px 4px 0 0}
+  .door-t{grid-area:t;align-self:start;font-size:32px}
+  .door-d{grid-area:d}
+  .door-c{grid-area:c;margin:2px 0 0}
+}
 
 /* ------------------------------------------------------------------ file cards */
 .fgrid{display:grid;gap:28px}
@@ -311,7 +320,7 @@ html.modal-open{overflow:hidden}
 .modal-card.wide{width:min(860px,100%)}
 @keyframes crt{0%{clip-path:inset(49% 0 49% 0)}35%{clip-path:inset(49% 0 49% 0)}100%{clip-path:inset(0 0 0 0)}}
 .modal-bar{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:10px 10px 10px 18px;background:var(--void);border-bottom:2px solid var(--signal)}
-.modal-k{color:var(--signal);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.modal-k{color:var(--signal);flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .modal-x{margin-left:auto}
 .modal-trail{flex:1 0 100%;display:flex;align-items:center;gap:10px;min-width:0;margin:2px 0 -2px;padding-top:8px;background:linear-gradient(90deg,var(--signal) 2px,transparent 2px) top/4px 2px repeat-x}
 .modal-back{min-width:0;flex:0 1 auto;overflow:hidden}
@@ -571,7 +580,7 @@ html.map-open{overflow:hidden}
 @media (hover:hover){.chcard:hover{border-color:var(--grace)}.chcard:hover .ch-t{color:var(--signal)}.chcard.sealed:hover{border-color:var(--signal)}}
 @media (max-width:520px){.chcard .ch-t{font-size:28px}.chlist{gap:10px}}
 .rec-grid{display:grid;gap:40px}
-@media (min-width:1120px){.rec-grid{grid-template-columns:250px minmax(0,1fr);gap:56px}}
+@media (min-width:1120px){.rec-grid{grid-template-columns:280px minmax(0,1fr);gap:52px;margin-top:14px}}
 .toc{align-self:start}
 @media (min-width:1120px){.toc{position:sticky;top:calc(var(--bar) + 20px);max-height:calc(100vh - var(--bar) - 40px);overflow:auto;scrollbar-width:thin}}
 @media (max-width:1119px){.rec-grid > .toc{display:none}}
@@ -586,6 +595,11 @@ html.map-open{overflow:hidden}
 .toc-btn{display:none}
 @media (max-width:1119px){.toc-btn{display:inline-flex}}
 .modal .toc a{font-size:19px;padding:8px 6px}
+.toc-feat{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:0 0 20px}
+.toc .toc-feat a,.modal .toc .toc-feat a{display:grid;grid-template-columns:minmax(0,1fr);align-content:start;justify-items:start;gap:8px;margin:5px;padding:10px 10px 9px;border:2px solid var(--signal);outline:2px solid var(--signal);outline-offset:3px;background:var(--void);color:var(--grace);font-size:16px;line-height:1.25}
+.toc-feat canvas.sigil{width:48px;height:48px}
+.toc .toc-feat a:hover{background:var(--void);color:var(--signal);border-color:var(--grace);outline-color:var(--grace)}
+.toc .toc-feat a:focus-visible{outline-color:var(--ichor)}
 .rtext{max-width:68ch;min-width:0}
 .chap{margin:0}
 .chap-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 24px;align-items:end;margin-bottom:26px;padding-bottom:18px;position:relative;container-type:inline-size}
@@ -641,24 +655,25 @@ table.annals td{padding:10px 12px;vertical-align:top;background-image:var(--dots
 table.annals td:first-child{font-family:var(--px);font-size:16px;color:var(--ichor);white-space:nowrap;-webkit-font-smoothing:none}
 
 /* ------------------------------------------------------------------ index */
-.ixtiles{display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr))}
+.ixtiles{display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:1fr}
 @media (max-width:999px){.ixtiles{grid-template-columns:1fr 1fr}}
 @media (max-width:560px){.ixtiles{grid-template-columns:1fr;gap:10px}}
-.ixtile{container-type:inline-size;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto 1fr;grid-template-areas:"n sg" "t sg" "d d";gap:6px 18px;padding:18px 18px 16px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);min-width:0;position:relative;min-height:170px;box-sizing:border-box}
+.ixtile{container-type:inline-size;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto 1fr;grid-template-areas:"n sg" "t sg" "d sg";gap:6px 20px;padding:18px 18px 16px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);min-width:0;position:relative;min-height:170px;box-sizing:border-box}
 .ixtile .n{grid-area:n}.ixtile .t{grid-area:t}.ixtile .d{grid-area:d}
-.ixtile canvas.sigil{grid-area:sg;align-self:center;margin:4px 6px 0 0}
+.ixtile canvas.sigil{grid-area:sg;align-self:center;width:96px;height:96px;margin:12px 8px 0 0}
 .ixtile .n{color:var(--signal)}
-.ixtile .t{font-family:var(--bl);font-size:44px;font-size:min(44px,calc((100cqi - 76px) / 6.7));line-height:1;color:var(--grace)}
+.ixtile .t{font-family:var(--bl);font-size:44px;font-size:min(44px,calc((100cqi - 124px) / 6.7));line-height:1;color:var(--grace)}
 .ixtile .d{font-size:17px;line-height:1.45}
 .ixtile::after{content:"";position:absolute;right:10px;top:10px;width:8px;height:8px;background:var(--signal)}
 @media (hover:hover){.ixtile:hover{border-color:var(--grace)}.ixtile:hover .t{color:var(--signal)}.ixtile:hover::after{background:var(--ichor)}}
-@media (max-width:560px){.ixtile{min-height:0;padding:14px 16px}.ixtile .t{font-size:36px;font-size:min(36px,calc((100cqi - 76px) / 6.7))}}
+@media (max-width:560px){.ixtile{--sig:72px;min-height:0;padding:14px 16px;column-gap:16px}.ixtile canvas.sigil{width:72px;height:72px;margin:10px 4px 0 0}.ixtile .t{font-size:36px;font-size:min(36px,calc((100cqi - 92px) / 6.7))}}
 .subnav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 40px}
 @media (max-width:759px){
-  .subnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:calc(-1 * var(--gut));padding-inline:var(--gut);scroll-padding-inline:var(--gut);margin-bottom:28px}
-  .subnav::-webkit-scrollbar{display:none}
-  .subnav .btn{flex:none}
+  .subnav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:28px}
+  .subnav .btn{justify-content:center;min-width:0;padding-inline:6px}
 }
+@media (max-width:559px){.subnav{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:359px){.subnav{grid-template-columns:1fr}}
 .lede-ix{margin:0 0 32px;max-width:62ch;font-style:italic}
 /* timeline */
 .tl{list-style:none;margin:0;padding:0;position:relative;max-width:900px}
@@ -675,7 +690,6 @@ table.annals td:first-child{font-family:var(--px);font-size:16px;color:var(--ich
 .tl-ch{color:var(--signal);text-decoration:none;border:2px solid var(--signal);padding:0 6px;line-height:20px}
 .tl-ch:hover{background:var(--signal);color:var(--void)}
 .tl-pager{margin-top:24px;max-width:900px}
-.toc .toc-tl{margin-top:8px;padding-top:8px;background:linear-gradient(90deg,var(--signal) 2px,transparent 2px) top/4px 2px repeat-x}
 .tl-text{margin:0;max-width:62ch}
 .tl .btn{justify-self:start;margin-top:6px}
 /* cards that open */
@@ -1031,18 +1045,36 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
   .gb-ctl-r .btn{padding:6px 6px}
 }
 @media (prefers-reduced-motion:reduce){.gb-lf{display:none}}
-.rec-gb{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"t s" "d s" "c s";gap:8px 32px;align-items:center;padding:24px 28px 22px 24px;border:2px solid var(--signal);outline:2px solid var(--signal);outline-offset:4px;margin:6px;text-decoration:none;color:var(--grace);background:var(--void)}
-.rg-t{grid-area:t;font-family:var(--bl);font-size:40px;line-height:1.02;color:var(--grace)}
+/* the Record's landing: the Restored Genesis and the timeline side by side on every screen (Dylan, October 3),
+   sharing their rows so the titles, lines and counts stand level, then the chapters */
+.rec-feat{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:12px;container-type:inline-size}
+.rec-gb{display:grid;grid-row:span 3;grid-template-rows:subgrid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"t s" "d s" "c s";row-gap:8px;column-gap:32px;align-items:start;padding:24px 28px 22px 24px;border:2px solid var(--signal);outline:2px solid var(--signal);outline-offset:4px;margin:6px;text-decoration:none;color:var(--grace);background:var(--void);min-width:0}
+@supports not (grid-template-rows:subgrid){.rec-gb{grid-row:auto;grid-template-rows:auto 1fr auto}}
+.rg-t{grid-area:t;align-self:end;font-family:var(--bl);font-size:40px;font-size:clamp(30px,calc(4.63cqi - 18.7px),40px);line-height:1.02;color:var(--grace);text-wrap:balance}
 .rg-d{grid-area:d;font-size:17px;line-height:1.45;max-width:46em}
-.rg-c{grid-area:c;color:var(--ichor);margin-top:4px}
-.rec-gb .sigil{grid-area:s}
+.rg-short{display:none}
+.rg-c{grid-area:c;align-self:end;color:var(--ichor);margin-top:4px}
+.rec-gb .sigil{grid-area:s;align-self:center}
 .rec-gb canvas.sigil{width:96px;height:96px}
-/* the Record's landing: the Restored Genesis and the timeline side by side, then the chapters */
-.rec-feat{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(460px,100%),1fr));align-items:stretch}
-.rec-feat .rec-gb{height:calc(100% - 12px);box-sizing:border-box}
 @media (hover:hover){.rec-gb:hover{border-color:var(--grace);outline-color:var(--grace)}.rec-gb:hover .rg-t{color:var(--signal)}}
 .rec-gb:focus-visible{outline-color:var(--ichor)}
-@media (max-width:520px){.rec-gb{grid-template-areas:"t s" "d d" "c c";gap:10px 16px;padding:16px 16px 14px;margin:5px}.rg-t{font-size:32px}.rec-feat .rec-gb{grid-template-columns:minmax(0,1fr);grid-template-areas:"s" "t" "d" "c"}.rec-feat .rec-gb .sigil{justify-self:start}}
+/* narrower, each stands as a tile: its mark over its title, its shorter line and its count */
+@media (max-width:999px){
+  .rec-gb{grid-row:span 4;grid-template-columns:minmax(0,1fr);grid-template-areas:"s" "t" "d" "c";row-gap:10px;padding:18px 20px 16px}
+  @supports not (grid-template-rows:subgrid){.rec-gb{grid-row:auto;grid-template-rows:auto auto 1fr auto}}
+  .rec-gb .sigil{justify-self:start;align-self:end}
+  .rg-t{font-size:min(36px,calc(7.58cqi - 9.4px))}
+  .rg-long{display:none}
+  .rg-short{display:block}
+}
+@media (max-width:560px){
+  .rec-feat{column-gap:6px}
+  .rec-gb{--sig:72px;row-gap:8px;padding:12px 12px 10px;margin:5px;outline-offset:3px}
+  .rec-gb canvas.sigil{width:72px;height:72px}
+  .rg-t{font-size:calc(7.58cqi - 6.2px)}
+  .rg-d{font-size:15px;line-height:1.4}
+  .rg-c{margin-top:2px}
+}
 
 .gb-ch .gb-num{font-family:var(--fellsc);font-size:.84em;letter-spacing:.04em;vertical-align:.04em}
 .gb.on .gb-sec.gb-cont{break-before:auto;margin-top:30px;padding-top:26px;background:var(--dots-s) left top/4px 2px repeat-x}

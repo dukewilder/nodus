@@ -684,6 +684,9 @@ async function plate(cv) {
   }
   const draw = () => {
     let avail = n * scale, room = Infinity;
+    /* a menu may cap its marks in CSS (--sig), so a narrow screen draws them smaller, still whole pixels */
+    const cap = parseFloat(getComputedStyle(cv).getPropertyValue('--sig'));
+    if (cap > 0) avail = Math.min(avail, cap);
     const host = cv.closest('summary, .modal-body, .map-panel, .ms-body');
     if (host && n === 160) {
       const cs = getComputedStyle(host);
@@ -993,9 +996,10 @@ function initTocButton() {
   b.addEventListener('click', () => {
     const c = document.createElement('nav');
     c.className = 'toc';
-    c.setAttribute('aria-label', 'Chapters of the Record');
-    c.appendChild($('ol', toc).cloneNode(true));
-    Modal.show(c, { kicker: 'THE RECORD // CHAPTERS' });
+    c.setAttribute('aria-label', 'The Record');
+    /* the whole of the Record's contents: the Restored Genesis and the timeline side by side, then the chapters */
+    Array.from(toc.children).forEach(n => c.appendChild(n.cloneNode(true)));
+    Modal.show(c, { kicker: 'THE RECORD' });
     const cur = $('[aria-current]', c); if (cur) cur.scrollIntoView({ block: 'center' });
   });
 }
