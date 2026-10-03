@@ -1204,3 +1204,7 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
 .lawcard.dead .ch-t{color:var(--signal)}
 .lawcard .now{grid-area:s;margin:2px 0 0}
 .law-ph .now{margin:0}
+/* the lamp stands beside its name, on the name's line (Dylan, October 3) */
+.pop-t .now,.fac-n .now,.corp-n .now,.law-t .now,.lawcard .ch-t .now{display:inline-block;vertical-align:middle;width:16px;height:16px;margin:0 0 0 .4em;grid-area:auto;grid-column:auto;position:relative;top:-.08em}
+.pop-t .now::before,.fac-n .now::before,.corp-n .now::before,.law-t .now::before,.lawcard .ch-t .now::before{display:block;margin:0}
+.lamp-nw{white-space:nowrap}
