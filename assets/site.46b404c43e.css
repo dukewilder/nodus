@@ -1133,3 +1133,69 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
   .doc .sgn{font-size:24px}
 }
 .toc h2.toc-laws{margin-top:22px}
+
+/* ------------------------------------------------------------------ now: what is in play in P+14, and what is gone */
+/* a lamp beside an entry, lit ICHOR and glowing for what is still in play, a dead SIGNAL ring for what is gone, as
+   NOD burns on the charter's sign and US is dead; what is gone keeps its words and dims its name and its picture */
+:root{
+  --lamp-lit:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cpath fill='%23F22C70' d='M1 0h1v1h-1zM3 0h1v1h-1zM5 0h1v1h-1zM0 1h1v1h-1zM2 1h1v1h-1zM4 1h1v1h-1zM6 1h1v1h-1zM1 2h1v1h-1zM5 2h1v1h-1zM7 2h1v1h-1zM0 3h1v1h-1zM6 3h1v1h-1zM1 4h1v1h-1zM7 4h1v1h-1zM0 5h1v1h-1zM2 5h1v1h-1zM6 5h1v1h-1zM1 6h1v1h-1zM3 6h1v1h-1zM5 6h1v1h-1zM7 6h1v1h-1zM2 7h1v1h-1zM4 7h1v1h-1zM6 7h1v1h-1z'/%3E%3Cpath fill='%23F22C70' d='M3 2h1v1h-1zM4 2h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM5 3h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM5 4h1v1h-1zM3 5h1v1h-1zM4 5h1v1h-1z'/%3E%3C/svg%3E");
+  --lamp-dead:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cpath fill='%2338D0DA' d='M2 1h1v1h-1zM3 1h1v1h-1zM4 1h1v1h-1zM5 1h1v1h-1zM1 2h1v1h-1zM6 2h1v1h-1zM1 3h1v1h-1zM6 3h1v1h-1zM1 4h1v1h-1zM6 4h1v1h-1zM1 5h1v1h-1zM6 5h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1z'/%3E%3C/svg%3E");
+  --led-lit:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Cpath fill='%23F22C70' d='M1 0h1v1h-1zM2 0h1v1h-1zM0 1h1v1h-1zM1 1h1v1h-1zM2 1h1v1h-1zM3 1h1v1h-1zM0 2h1v1h-1zM1 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM1 3h1v1h-1zM2 3h1v1h-1z'/%3E%3C/svg%3E");
+  --led-dead:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Cpath fill='%2338D0DA' d='M1 0h1v1h-1zM2 0h1v1h-1zM0 1h1v1h-1zM3 1h1v1h-1zM0 2h1v1h-1zM3 2h1v1h-1zM1 3h1v1h-1zM2 3h1v1h-1z'/%3E%3C/svg%3E");
+}
+.now{display:flex;align-items:center;gap:6px;margin:8px 0 0;color:var(--ichor);font-family:var(--px);font-size:16px;line-height:24px;font-weight:400;-webkit-font-smoothing:none}
+.now::before{content:"";flex:none;width:16px;height:16px;margin-left:-2px;background:var(--lamp-lit) 0 0/16px 16px no-repeat}
+.now.dead{color:var(--signal)}
+.now.dead::before{background-image:var(--lamp-dead)}
+.pop-id .now{margin-top:10px}
+/* the faces of the cards */
+.fac > summary{grid-template-rows:auto auto auto}
+.fac .fsig{grid-row:1 / -1;line-height:0;position:relative;align-self:center}
+.fac .now,.corp .now{margin-top:4px}
+.fac .now{grid-column:2;align-self:start}
+.card.dead .fac-n,.card.dead .corp-n,.card.dead .chip-t{color:var(--signal)}
+.card.dead .logo,.card.dead .fsig{position:relative}
+.card.dead .logo::after,.card.dead .fsig::after,.loc.dead .loc-p::after{content:"";position:absolute;inset:0;background:var(--d25v);background-size:8px 8px;pointer-events:none}
+.loc.dead .loc-p{position:relative}
+.loc.dead .loc-n{color:var(--signal)}
+.loc-acts{align-items:center}
+.loc-acts .now{margin:0 0 0 auto;padding-left:6px}
+.pop-place > .now{margin:-6px 0 16px}
+/* a chip carries its lamp at its right, small */
+.term.lit > summary,.term.dead > summary{padding-right:30px}
+.term.lit > summary::after,.term.dead > summary::after{content:"";position:absolute;right:11px;top:calc(50% - 4px);width:8px;height:8px;background:var(--led-lit) 0 0/8px 8px no-repeat}
+.term.dead > summary::after{background-image:var(--led-dead)}
+/* the directory beside the survey, and the names on it */
+.prow.lit::before{background:var(--led-lit) 0 0/8px 8px no-repeat}
+.prow.dead::before{background:var(--led-dead) 0 0/8px 8px no-repeat}
+.prow.dead .pn{color:var(--signal)}
+.pin.poi.dead{color:var(--signal)}
+@media (hover:hover){.prow.lit:hover::before,.prow.dead:hover::before{background:var(--void)}}
+.prow.lit[aria-current]::before,.prow.dead[aria-current]::before{background:var(--ichor)}
+.prow.dead[aria-current] .pn{color:var(--void)}
+.nrow.dead .pn{color:var(--signal)}
+/* the key to the lamps, which also sorts what it keys */
+.nowkey{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:0 0 26px}
+.nowkey .nk-h{margin:0 6px 0 0;color:var(--signal)}
+.nk{display:inline-flex;align-items:center;gap:6px;margin:0;padding:6px 12px 6px 10px;font-family:var(--px);font-size:16px;line-height:24px;color:var(--ichor);background:var(--void);border:2px solid var(--signal);cursor:pointer;-webkit-font-smoothing:none;text-align:left}
+.nk::before{content:"";flex:none;width:16px;height:16px;background:var(--lamp-lit) 0 0/16px 16px no-repeat}
+.nk.dead{color:var(--signal)}
+.nk.dead::before{background-image:var(--lamp-dead)}
+.nk b{font-weight:400;color:var(--grace)}
+.nk[aria-pressed="true"]{border-color:var(--grace);box-shadow:inset 0 0 0 2px var(--void),inset 0 0 0 4px var(--grace)}
+@media (hover:hover){.nk:hover{border-color:var(--grace)}}
+.nowkey .nk-all{display:none}
+.nowkey.on .nk-all{display:inline-flex;color:var(--grace)}
+.nowkey.on .nk-all::before{content:none}
+.nowkey .nk-d{flex-basis:100%;margin:2px 0 0;color:var(--signal);font-size:17px;line-height:1.45;font-family:var(--fell)}
+[data-show="lit"] .card:not(.lit),[data-show="dead"] .card:not(.dead),[data-show="lit"] .loc:not(.lit),[data-show="dead"] .loc:not(.dead){display:none}
+[data-show] .letter:not(:has(.card.lit,.card.dead)),[data-show="lit"] .letter:not(:has(.card.lit)),[data-show="dead"] .letter:not(:has(.card.dead)),[data-show="lit"] .lgrp:not(:has(.loc.lit)),[data-show="dead"] .lgrp:not(:has(.loc.dead)){display:none}
+@media (max-width:560px){.nowkey .nk-h{flex-basis:100%}.nk{padding:5px 10px 5px 8px}.nk .nk-w{display:none}}
+/* the key's own pin */
+.km-pin{position:absolute;left:8px;top:-10px;display:block;font-family:var(--px);font-size:16px;line-height:20px;white-space:nowrap;-webkit-font-smoothing:none;padding:0 5px;background:var(--void);color:var(--grace)}
+.km-pin.dead{color:var(--signal)}
+/* the laws */
+.lawcard{grid-template-areas:"n sg" "t sg" "w sg" "s s"}
+.lawcard.dead .ch-t{color:var(--signal)}
+.lawcard .now{grid-area:s;margin:2px 0 0}
+.law-ph .now{margin:0}
