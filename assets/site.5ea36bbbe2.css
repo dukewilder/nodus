@@ -1089,6 +1089,26 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
 /* ------------------------------------------------------------------ the laws: the charter, the Covenant, the Concord */
 .rec-group{display:grid;gap:14px}
 .rec-h{margin:0;color:var(--signal);font-weight:400}
+/* the Record in three parts (Dylan, October 3): Before the Charter, the Charter Years, After the Parousia */
+.rec-part{display:grid;gap:10px;margin:0 0 26px}
+.rec-part:last-child{margin-bottom:0}
+.rp-h{margin:0;color:var(--grace);font-weight:400}
+.rp-h .rp-n{color:var(--signal)}
+.rp-d{margin:0 0 6px;max-width:68ch}
+.toc .toc-pt{margin:18px 0 6px;color:var(--grace);font-weight:400}
+.toc h2 + .toc-pt{margin-top:0}
+.tl .era-d{display:block;max-width:60ch;margin-top:2px;color:var(--grace)}
+/* of this Record: where its accounts come from */
+.preface{max-width:72ch}
+.pre-h{margin:0 0 10px;color:var(--signal);font-weight:400}
+.preface p{margin:0}
+/* the accounts differ: where the city's accounts part, the Record sets them side by side and leaves them standing */
+.acc{margin:32px 5px 36px;padding:14px 18px 6px;border:2px solid var(--signal);outline:2px solid var(--signal);outline-offset:3px}
+.acc-h{margin:0 0 14px;color:var(--ichor)}
+.acc dl{margin:0;display:grid;grid-template-columns:minmax(0,190px) minmax(0,1fr);gap:12px 20px;align-items:baseline}
+.acc dt{margin:0;color:var(--signal)}
+.acc dd{margin:0 0 8px}
+@media (max-width:640px){.acc{padding:12px 14px 4px}.acc dl{grid-template-columns:minmax(0,1fr);gap:0}.acc dd{margin:0 0 14px}}
 .lawcard{outline:2px solid var(--signal);outline-offset:4px;margin:6px;height:calc(100% - 12px)}
 @media (hover:hover){.lawcard:hover{outline-color:var(--grace)}}
 .lawcard:focus-visible{outline-color:var(--ichor)}
