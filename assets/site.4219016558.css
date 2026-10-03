@@ -140,15 +140,18 @@ canvas{display:block}
 .home-sec.first{padding-top:44px}
 @media (max-width:759px){.home-sec{padding-top:52px}.home-sec.first{padding-top:32px}}
 .kick{margin:0 0 16px;color:var(--signal)}
-.doors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.door{display:grid;grid-template-rows:auto 1fr auto;gap:8px;padding:18px 18px 16px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);background:var(--void);min-width:0;position:relative}
+.doors{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:1fr;gap:12px}
+/* five doors of one size, each under its mark: the files, the survey, the Record, the index and the book */
+.door{display:grid;grid-template-rows:auto auto 1fr auto;gap:8px;padding:18px 18px 16px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);background:var(--void);min-width:0;position:relative;container-type:inline-size}
 .door::after{content:"";position:absolute;right:10px;top:10px;width:8px;height:8px;background:var(--signal)}
-.door-t{font-family:var(--bl);font-size:40px;line-height:1.02;color:var(--grace)}
+.door canvas.sigil{width:96px;height:96px;margin:0 0 6px}
+.door-t{font-family:var(--bl);font-size:36px;font-size:min(36px,15.2cqi);line-height:1.02;color:var(--grace);text-wrap:balance}
 .door-d{font-size:17px;line-height:1.45}
 .door-c{color:var(--ichor);margin-top:8px}
 @media (hover:hover){.door:hover{border-color:var(--grace)}.door:hover::after{background:var(--ichor)}.door:hover .door-t{color:var(--signal)}}
-@media (max-width:1099px){.doors{grid-template-columns:1fr 1fr}}
-@media (max-width:520px){.doors{grid-template-columns:1fr;gap:10px}.door{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:14px;padding:16px 16px 14px}.door-t{font-size:32px}.door-d{grid-column:1 / -1}.door-c{grid-column:2;grid-row:1;align-self:center;margin:0}}
+@media (max-width:1099px){.doors{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:759px){.doors{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.doors{grid-template-columns:1fr;gap:10px}.door{grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:16px;row-gap:6px;padding:16px 16px 14px;align-items:start}.door canvas.sigil{margin:2px 0 0;grid-row:1 / span 3}.door-t{font-size:32px}.door-d,.door-c{grid-column:2}.door-c{margin:2px 0 0}}
 
 /* ------------------------------------------------------------------ file cards */
 .fgrid{display:grid;gap:28px}
@@ -307,9 +310,14 @@ html.modal-open{overflow:hidden}
 .modal-card{position:relative;box-sizing:border-box;width:min(700px,100%);max-height:100%;overflow:auto;overscroll-behavior:contain;background:var(--void);border:2px solid var(--signal);outline:none;animation:crt .18s steps(4) both}
 .modal-card.wide{width:min(860px,100%)}
 @keyframes crt{0%{clip-path:inset(49% 0 49% 0)}35%{clip-path:inset(49% 0 49% 0)}100%{clip-path:inset(0 0 0 0)}}
-.modal-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:10px 10px 10px 18px;background:var(--void);border-bottom:2px solid var(--signal)}
+.modal-bar{position:sticky;top:0;z-index:2;display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:10px 10px 10px 18px;background:var(--void);border-bottom:2px solid var(--signal)}
 .modal-k{color:var(--signal);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .modal-x{margin-left:auto}
+.modal-trail{flex:1 0 100%;display:flex;align-items:center;gap:10px;min-width:0;margin:2px 0 -2px;padding-top:8px;background:linear-gradient(90deg,var(--signal) 2px,transparent 2px) top/4px 2px repeat-x}
+.modal-back{min-width:0;flex:0 1 auto;overflow:hidden}
+.modal-back span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.modal-all{margin-left:auto;flex:0 0 auto}
+.modal-n{color:var(--signal);flex:0 0 auto}
 .modal-body{padding:24px 24px 28px}
 @media (max-width:640px){
   .modal{place-items:end stretch;padding:calc(env(safe-area-inset-top,0px) + 40px) 0 0}
@@ -636,13 +644,15 @@ table.annals td:first-child{font-family:var(--px);font-size:16px;color:var(--ich
 .ixtiles{display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr))}
 @media (max-width:999px){.ixtiles{grid-template-columns:1fr 1fr}}
 @media (max-width:560px){.ixtiles{grid-template-columns:1fr;gap:10px}}
-.ixtile{display:grid;grid-template-rows:auto auto 1fr;gap:6px;padding:18px 18px 16px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);min-width:0;position:relative;min-height:170px;box-sizing:border-box}
+.ixtile{container-type:inline-size;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto 1fr;grid-template-areas:"n sg" "t sg" "d d";gap:6px 18px;padding:18px 18px 16px;border:2px solid var(--signal);text-decoration:none;color:var(--grace);min-width:0;position:relative;min-height:170px;box-sizing:border-box}
+.ixtile .n{grid-area:n}.ixtile .t{grid-area:t}.ixtile .d{grid-area:d}
+.ixtile canvas.sigil{grid-area:sg;align-self:center;margin:4px 6px 0 0}
 .ixtile .n{color:var(--signal)}
-.ixtile .t{font-family:var(--bl);font-size:44px;line-height:1;color:var(--grace)}
+.ixtile .t{font-family:var(--bl);font-size:44px;font-size:min(44px,calc((100cqi - 76px) / 6.7));line-height:1;color:var(--grace)}
 .ixtile .d{font-size:17px;line-height:1.45}
 .ixtile::after{content:"";position:absolute;right:10px;top:10px;width:8px;height:8px;background:var(--signal)}
 @media (hover:hover){.ixtile:hover{border-color:var(--grace)}.ixtile:hover .t{color:var(--signal)}.ixtile:hover::after{background:var(--ichor)}}
-@media (max-width:560px){.ixtile{min-height:0;padding:14px 16px}.ixtile .t{font-size:36px}}
+@media (max-width:560px){.ixtile{min-height:0;padding:14px 16px}.ixtile .t{font-size:36px;font-size:min(36px,calc((100cqi - 76px) / 6.7))}}
 .subnav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 40px}
 @media (max-width:759px){
   .subnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:calc(-1 * var(--gut));padding-inline:var(--gut);scroll-padding-inline:var(--gut);margin-bottom:28px}
@@ -661,6 +671,11 @@ table.annals td:first-child{font-family:var(--px);font-size:16px;color:var(--ich
 .tl li.era::before{width:16px;height:4px;top:10px;left:0;border:0;background:var(--signal)}
 .tl .era-t{color:var(--signal)}
 .tl-when{color:var(--ichor)}
+.tl-w{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px}
+.tl-ch{color:var(--signal);text-decoration:none;border:2px solid var(--signal);padding:0 6px;line-height:20px}
+.tl-ch:hover{background:var(--signal);color:var(--void)}
+.tl-pager{margin-top:24px;max-width:900px}
+.toc .toc-tl{margin-top:8px;padding-top:8px;background:linear-gradient(90deg,var(--signal) 2px,transparent 2px) top/4px 2px repeat-x}
 .tl-text{margin:0;max-width:62ch}
 .tl .btn{justify-self:start;margin-top:6px}
 /* cards that open */
@@ -710,6 +725,15 @@ table.annals td:first-child{font-family:var(--px);font-size:16px;color:var(--ich
 .foot-l{margin:0;color:var(--signal)}
 @media (max-width:759px){.foot{margin-top:72px;padding-block:16px 24px}}
 .note-rec p{margin:0 0 10px}
+.howto{margin:20px 0 0;max-width:62ch;border:2px solid var(--signal);background:var(--void)}
+.howto summary{cursor:pointer;color:var(--signal);padding:8px 14px;list-style:none}
+.howto summary::-webkit-details-marker{display:none}
+.howto summary::before{content:"+";display:inline-block;width:20px}
+.howto[open] summary::before{content:"-"}
+.howto summary:hover{background:var(--signal);color:var(--void)}
+.howto-l{margin:0;padding:10px 18px 6px 44px;font-size:18px;line-height:1.55;color:var(--grace)}
+.howto-l li{margin:0 0 10px;padding-left:4px}
+.howto-l li::marker{font-family:var(--px);font-size:16px;color:var(--signal)}
 .note-rec .sig{margin:4px 0 0;font-family:var(--px);font-size:16px;line-height:24px;font-style:normal;color:var(--signal);-webkit-font-smoothing:none}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -1007,17 +1031,19 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
   .gb-ctl-r .btn{padding:6px 6px}
 }
 @media (prefers-reduced-motion:reduce){.gb-lf{display:none}}
-.door.wide{grid-column:1 / -1;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:24px;align-items:end}
-.door.wide .door-d{grid-column:1;max-width:46em}
-.door.wide .door-c{grid-column:2;grid-row:1 / span 2;align-self:end;margin:0}
 .rec-gb{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"t s" "d s" "c s";gap:8px 32px;align-items:center;padding:24px 28px 22px 24px;border:2px solid var(--signal);outline:2px solid var(--signal);outline-offset:4px;margin:6px;text-decoration:none;color:var(--grace);background:var(--void)}
 .rg-t{grid-area:t;font-family:var(--bl);font-size:40px;line-height:1.02;color:var(--grace)}
 .rg-d{grid-area:d;font-size:17px;line-height:1.45;max-width:46em}
 .rg-c{grid-area:c;color:var(--ichor);margin-top:4px}
 .rec-gb .sigil{grid-area:s}
+.rec-gb canvas.sigil{width:96px;height:96px}
+/* the Record's landing: the Restored Genesis and the timeline side by side, then the chapters */
+.rec-feat{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(460px,100%),1fr));align-items:stretch}
+.rec-feat .rec-gb{height:calc(100% - 12px);box-sizing:border-box}
 @media (hover:hover){.rec-gb:hover{border-color:var(--grace);outline-color:var(--grace)}.rec-gb:hover .rg-t{color:var(--signal)}}
-@media (max-width:520px){.rec-gb{grid-template-areas:"t s" "d d" "c c";gap:10px 16px;padding:16px 16px 14px;margin:5px}.rg-t{font-size:32px}}
-@media (max-width:520px){.door.wide{grid-template-columns:minmax(0,1fr) auto;align-items:start}.door.wide .door-d{grid-column:1 / -1}.door.wide .door-c{grid-row:1;align-self:center}}
+.rec-gb:focus-visible{outline-color:var(--ichor)}
+@media (max-width:520px){.rec-gb{grid-template-areas:"t s" "d d" "c c";gap:10px 16px;padding:16px 16px 14px;margin:5px}.rg-t{font-size:32px}.rec-feat .rec-gb{grid-template-columns:minmax(0,1fr);grid-template-areas:"s" "t" "d" "c"}.rec-feat .rec-gb .sigil{justify-self:start}}
+
 .gb-ch .gb-num{font-family:var(--fellsc);font-size:.84em;letter-spacing:.04em;vertical-align:.04em}
 .gb.on .gb-sec.gb-cont{break-before:auto;margin-top:30px;padding-top:26px;background:var(--dots-s) left top/4px 2px repeat-x}
 .gb-head{break-inside:avoid;break-after:avoid}
