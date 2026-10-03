@@ -1085,3 +1085,51 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
 @media (max-width:359px){.gb-w{display:none}.gb-modes button{padding:6px 8px;font-size:16px}}
 .gb-link{margin:18px 0 28px}
 .gb-link .btn{white-space:normal;max-width:100%;text-align:left;justify-content:flex-start;line-height:22px}
+
+/* ------------------------------------------------------------------ the laws: the charter, the Covenant, the Concord */
+.rec-group{display:grid;gap:14px}
+.rec-h{margin:0;color:var(--signal);font-weight:400}
+.lawcard{outline:2px solid var(--signal);outline-offset:4px;margin:6px;height:calc(100% - 12px)}
+@media (hover:hover){.lawcard:hover{outline-color:var(--grace)}}
+.lawcard:focus-visible{outline-color:var(--ichor)}
+.law{max-width:860px}
+.law-ph{display:grid;gap:10px;margin:0 0 26px}
+.law-head{display:flex;align-items:center;gap:20px}
+.law-head canvas.sigil{width:96px;height:96px;flex:none}
+.law-head .px{margin:0;color:var(--ichor)}
+.law-t{margin:2px 0 0;font-family:var(--bl);font-weight:400;font-size:52px;line-height:1.02;color:var(--grace)}
+.law-ph .ph-d{margin:0}
+@media (max-width:560px){.law-t{font-size:40px}}
+.law-note p{margin:0 0 16px;max-width:66ch}
+.law-toc{margin:30px 0 6px}
+.law-toc h2{margin:0 0 10px;color:var(--signal);font-weight:400}
+.law-toc ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:2px 18px}
+.law-toc a{display:grid;grid-template-columns:36px minmax(0,1fr);gap:8px;align-items:baseline;text-decoration:none;color:var(--grace);padding:5px 6px;font-size:18px;line-height:1.3}
+.law-toc a .px{color:var(--signal)}
+.law-toc a:hover{background:var(--signal);color:var(--void)}
+.law-toc a:hover .px{color:var(--void)}
+.law-doc .doc{scroll-margin-top:calc(var(--bar) + 20px)}
+.law .pager{margin-top:64px}
+.doc .art{margin:26px 0 8px;font-family:var(--px);font-size:16px;line-height:24px;color:var(--signal);-webkit-font-smoothing:none}
+.doc .art:first-child{margin-top:0}
+.doc .art .n{color:inherit}
+.doc .sl{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 18px;margin:0 0 10px;padding:4px 0 10px;background:var(--dots-s) left bottom/4px 2px repeat-x}
+.doc .sl .px{color:var(--signal);min-width:19ch}
+.doc .sgn{font-family:var(--bl);font-size:28px;line-height:1.15;color:var(--grace)}
+.doc.dk .sig{color:var(--signal)}
+.doc.dh{border-color:var(--grace)}
+.doc.dh .doc-h{border-color:var(--grace)}
+.doc.dh .doc-h pre,.doc.dh .hr,.doc.dh .n{color:var(--grace)}
+.doc.dc{border-color:var(--ichor)}
+.doc.dc .doc-h{border-color:var(--ichor)}
+.doc.dc .doc-h pre,.doc.dc .art,.doc.dc .hr,.doc.dc .n,.doc.dc .sl .px,.doc.dc .sgn{color:var(--ichor)}
+.doc.dc .sl{background-image:linear-gradient(90deg,var(--ichor) 2px,transparent 2px)}
+.pop-act{margin:16px 0 4px}
+.pop-act .btn{white-space:normal;max-width:100%;text-align:left;justify-content:flex-start;line-height:22px}
+@media (max-width:560px){
+  .law-head{--sig:72px;gap:14px}
+  .law-head canvas.sigil{width:72px;height:72px}
+  .doc .sl .px{min-width:0;flex:1 1 100%}
+  .doc .sgn{font-size:24px}
+}
+.toc h2.toc-laws{margin-top:22px}
