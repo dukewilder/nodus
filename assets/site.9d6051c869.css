@@ -1184,21 +1184,13 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
 .was-t button[aria-pressed="true"]{color:var(--grace);border-color:var(--grace);cursor:default}
 @media (hover:hover){.was-t button[aria-pressed="false"]:hover{border-color:var(--grace)}}
 /* the key to the lamps, which also sorts what it keys */
-.nowkey{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:0 0 26px}
+.nowkey{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 26px}
 .nowkey .nk-h{margin:0 6px 0 0;color:var(--signal)}
-.nk{display:inline-flex;align-items:center;gap:6px;margin:0;padding:6px 12px 6px 10px;font-family:var(--px);font-size:16px;line-height:24px;color:var(--ichor);background:var(--void);border:2px solid var(--signal);cursor:pointer;-webkit-font-smoothing:none;text-align:left}
+.nk{display:inline-flex;align-items:center;gap:6px;margin:0 8px 0 0;font-family:var(--px);font-size:16px;line-height:24px;color:var(--ichor)}
 .nk::before{content:"";flex:none;width:16px;height:16px;background:var(--lamp-lit) 0 0/16px 16px no-repeat}
 .nk.dead{color:var(--signal)}
 .nk.dead::before{background-image:var(--lamp-dead)}
 .nk b{font-weight:400;color:var(--grace)}
-.nk[aria-pressed="true"]{border-color:var(--grace);box-shadow:inset 0 0 0 2px var(--void),inset 0 0 0 4px var(--grace)}
-@media (hover:hover){.nk:hover{border-color:var(--grace)}}
-.nowkey .nk-all{display:none}
-.nowkey.on .nk-all{display:inline-flex;color:var(--grace)}
-.nowkey.on .nk-all::before{content:none}
-.nowkey .nk-d{flex-basis:100%;margin:2px 0 0;color:var(--signal);font-size:17px;line-height:1.45;font-family:var(--fell)}
-[data-show="lit"] .card:not(.lit),[data-show="dead"] .card:not(.dead){display:none}
-@media (max-width:560px){.nowkey .nk-h{flex-basis:100%}.nk{padding:5px 10px 5px 8px}.nk .nk-w{display:none}}
 /* the laws */
 .lawcard{grid-template-areas:"n sg" "t sg" "w sg" "s s"}
 .lawcard.dead .ch-t{color:var(--signal)}
@@ -1208,3 +1200,4 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
 .pop-t .now,.fac-n .now,.corp-n .now,.law-t .now,.lawcard .ch-t .now{display:inline-block;vertical-align:middle;width:16px;height:16px;margin:0 0 0 .4em;grid-area:auto;grid-column:auto;position:relative;top:-.08em}
 .pop-t .now::before,.fac-n .now::before,.corp-n .now::before,.law-t .now::before,.lawcard .ch-t .now::before{display:block;margin:0}
 .lamp-nw{white-space:nowrap}
+@media (max-width:560px){.nowkey .nk-h{flex-basis:100%}}
