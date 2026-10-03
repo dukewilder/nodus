@@ -1201,3 +1201,9 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
 .pop-t .now::before,.fac-n .now::before,.corp-n .now::before,.law-t .now::before,.lawcard .ch-t .now::before{display:block;margin:0}
 .lamp-nw{white-space:nowrap}
 @media (max-width:560px){.nowkey .nk-h{flex-basis:100%}}
+/* the index's groups of factions and companies, and the street's price table */
+.fgrp + .fgrp{margin-top:34px}
+.fgrp-h{margin:0 0 14px;font-family:var(--px);font-weight:400;font-size:16px;line-height:24px;color:var(--signal);-webkit-font-smoothing:none;padding-bottom:6px;border-bottom:2px solid var(--signal)}
+table.ptab{border-collapse:collapse;width:100%;margin:14px 0;font-size:16px;line-height:1.45}
+table.ptab td{padding:7px 10px 7px 0;vertical-align:top;background-image:var(--dots-s);background-size:4px 2px;background-repeat:repeat-x;background-position:0 100%}
+table.ptab td + td{text-align:right;font-family:var(--px);font-size:14px;color:var(--ichor);white-space:nowrap;-webkit-font-smoothing:none;padding-right:0}
