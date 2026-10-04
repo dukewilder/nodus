@@ -1400,7 +1400,7 @@ svg.curfew .cf-g{font-size:7px;fill:var(--void)}
 .tt-box.bypage .tt-mark{margin-top:6px}
 
 /* the map at the head of the City */
-.cm-frame{position:relative;max-width:960px;margin:0 auto;border:2px solid var(--signal);line-height:0;background:var(--void)}
+.cm-frame{position:relative;max-width:960px;margin:0 auto;border:2px solid var(--signal);line-height:0;background:var(--void);overflow:hidden}
 .cm-img{display:block}
 .cm-img img{display:block;width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges}
 .cm-names{position:absolute;inset:0;pointer-events:none}
@@ -1430,9 +1430,10 @@ svg.curfew .cf-g{font-size:7px;fill:var(--void)}
 }
 
 /* ------------------------------------------------------------------ the ads
-   The city's own advertising, dealt across the site as a sourcebook sets its ads between its sections, and drawn to
-   be read as ads at a glance (Dylan, October 4). The screens of Pan glow, invert or crawl; the bills of the walls are
-   posters on SIGNAL paper with tear-off tabs, playbills in a double rule, or warnings between hazard bands. */
+   The houses' ads, which the archive carries as a sourcebook carries its advertisers' (Dylan, October 4: a place
+   they have paid to advertise on, seamless through the site), each drawn to be read as an ad at a glance. Each
+   house keeps one look: a screen that glows, one run in reverse, one with a crawl, a web banner with its button,
+   a billboard under its lamps, or a warning between hazard bands. */
 .ad{position:relative;container-type:inline-size;display:grid;align-content:start;margin:0;color:var(--grace);background:var(--void);overflow:hidden;line-height:1.4}
 .ad p{margin:0}
 .ad-tag{position:absolute;top:6px;right:8px;z-index:2;font-size:8px;line-height:12px}
@@ -1480,34 +1481,28 @@ svg.curfew .cf-g{font-size:7px;fill:var(--void)}
 @media (prefers-reduced-motion:no-preference){.ad-crawl span{animation:ad-crawl 40s steps(400) infinite}}
 @keyframes ad-crawl{to{transform:translateX(-100%)}}
 
-/* a bill on SIGNAL paper, its name in black letter, the tabs along its foot to tear away */
-.look-poster{background:var(--signal);color:var(--void);padding:18px 16px 0;text-align:center;justify-items:center;row-gap:8px;grid-template-rows:auto auto auto auto 1fr auto auto}
-.look-poster > *,.look-playbill > *{max-width:100%;box-sizing:border-box}
-.look-poster::before,.look-poster::after{content:"";position:absolute;top:-6px;width:56px;height:20px;background:var(--void) var(--d50s);background-size:4px 4px}
-.look-poster::before{left:-14px}
-.look-poster::after{right:-14px}
-.look-poster .ad-tag{position:static;order:-1;color:var(--void)}
-.look-poster .ad-art{padding:8px;background:var(--void);outline:2px solid var(--void);outline-offset:3px}
-.look-poster .ad-brand{font-family:var(--bl);font-size:45px;line-height:1.05;color:var(--void)}
-.look-poster .ad-head{font-family:var(--fellsc);font-size:24px;line-height:1.15;letter-spacing:1px;border-block:3px double var(--void);padding:6px 0;width:100%}
-.look-poster .ad-body{font-style:italic;max-width:min(34ch,100%)}
-.look-poster .ad-fine{color:var(--void)}
-.ad-tabs{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));width:calc(100% + 32px);margin:12px -16px 0;border-top:2px dashed var(--void)}
-.ad-tabs span{writing-mode:vertical-rl;transform:rotate(180deg);padding:10px 0;font-size:8px;line-height:12px;color:var(--void);border-left:2px dashed var(--void);text-align:center;justify-self:stretch;overflow:hidden;max-height:120px}
-.ad-tabs span:first-child{border-left:0}
-.ad-tabs span:nth-child(3){visibility:hidden}
-.ad-tabs span:nth-child(6){visibility:hidden}
+/* a web banner: the mark in its box, the line big, the button to press */
+.look-banner{border:2px solid var(--signal);padding:14px 16px;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"art brand" "art head" "body body" "fine cta";grid-template-rows:auto auto 1fr auto;column-gap:16px;row-gap:6px;background:var(--void) var(--d12s);background-size:8px 8px}
+.look-banner .ad-tag{color:var(--signal);background:var(--void);padding:0 4px}
+.look-banner .ad-art{grid-area:art;align-self:start;background:var(--void);border:2px solid var(--signal);padding:6px}
+.look-banner .ad-brand{grid-area:brand;color:var(--ichor);align-self:end;margin-top:8px;justify-self:start;background:var(--void);padding:0 4px;margin-left:-4px}
+.look-banner .ad-head{grid-area:head;color:var(--grace);background:var(--void);justify-self:start;padding:0 4px;margin-left:-4px}
+.look-banner .ad-body{grid-area:body;background:var(--void);padding:6px 8px;margin:4px -8px 0}
+.look-banner .ad-fine{grid-area:fine;align-self:center;color:var(--signal);background:var(--void);justify-self:start;padding:0 4px}
+.ad-cta{grid-area:cta;align-self:center;justify-self:end;background:var(--ichor);color:var(--void);font-size:16px;line-height:24px;padding:4px 12px;box-shadow:4px 4px 0 var(--signal);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+@container (max-width:340px){.look-banner{grid-template-areas:"art brand" "art head" "body body" "fine fine" "cta cta"}.ad-cta{justify-self:start;margin-top:4px}}
 
-/* a playbill in a double rule, set in caps round a line of stars */
-.look-playbill{border:6px double var(--signal);padding:22px 18px 18px;text-align:center;justify-items:center;row-gap:8px;grid-template-rows:auto auto auto auto 1fr auto}
-.look-playbill .ad-tag{color:var(--signal)}
-.look-playbill .ad-brand{font-family:var(--fellsc);font-size:28px;line-height:1.05;letter-spacing:1px;color:var(--ichor);overflow-wrap:anywhere}
-.look-playbill .ad-head{font-family:var(--fellsc);font-size:22px;line-height:1.2;letter-spacing:2px;color:var(--grace);overflow-wrap:normal}
-.ad-stars{font-family:var(--px);font-size:16px;line-height:16px;letter-spacing:12px;color:var(--signal)}
-.look-playbill .ad-body{font-style:italic;max-width:min(36ch,100%)}
-.look-playbill .ad-fine{color:var(--signal);border-top:1px solid var(--signal);padding-top:8px;width:100%}
-.look-playbill .ad-art{order:-1;margin-top:4px}
-@container (min-width:380px){.look-poster .ad-brand{font-size:54px}.look-playbill .ad-brand{font-size:34px}}
+/* a billboard under its lamps: the frame in SIGNAL, the line as big as it goes, the mark at the side */
+.look-billboard{border:6px solid var(--signal);padding:26px 18px 16px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand art" "head art" "body body" "fine fine";grid-template-rows:auto auto 1fr auto;column-gap:14px;row-gap:8px;background:var(--void);box-shadow:inset 0 0 0 2px var(--void),inset 0 0 0 4px var(--ichor)}
+.ad-lamps{position:absolute;top:8px;left:14px;right:14px;height:4px;background:linear-gradient(90deg,var(--ichor) 0 4px,transparent 4px) 0 0/20px 4px repeat-x}
+.look-billboard .ad-tag{top:auto;bottom:8px;right:12px;color:var(--signal)}
+.look-billboard .ad-brand{grid-area:brand;color:var(--signal);letter-spacing:3px}
+.look-billboard .ad-head{grid-area:head;color:var(--ichor);font-size:32px;line-height:34px}
+@container (min-width:380px){.look-billboard .ad-head{font-size:40px;line-height:42px}}
+@container (min-width:540px){.look-billboard .ad-head{font-size:48px;line-height:50px}}
+.look-billboard .ad-art{grid-area:art;align-self:center}
+.look-billboard .ad-body{grid-area:body}
+.look-billboard .ad-fine{grid-area:fine;color:var(--signal);padding-right:110px}
 
 /* a warning between hazard bands, its line stencilled big in ICHOR */
 .look-stencil{border:2px solid var(--ichor);padding:0 16px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"band band" "brand art" "head head" "body body" "fine fine" "band2 band2";grid-template-rows:auto auto auto 1fr auto auto;column-gap:12px;row-gap:8px}
