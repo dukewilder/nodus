@@ -1270,9 +1270,6 @@ svg.curfew .cf-g{font-size:7px;fill:var(--void)}
 .cf-side .tt-tab{justify-self:stretch}
 @media (max-width:899px){.cf-wrap{grid-template-columns:minmax(0,1fr)}}
 
-/* the screens of Brightwall */
-.ads{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr))}
-.lcards > .ad.in-grid{min-height:100%}
 
 /* the Tide Table */
 .tt{border:2px solid var(--signal);padding:0 0 20px}
@@ -1390,13 +1387,6 @@ svg.curfew .cf-g{font-size:7px;fill:var(--void)}
 .chap h2:target{color:var(--ichor)}
 
 /* the ads dealt across the site: a band between sections, two to a row, one on a phone */
-.adband{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:36px 0}
-@media (max-width:759px){.adband{grid-template-columns:1fr;margin:28px 0}.adband > .ad:nth-child(n+2){display:none}}
-.rtext .adband{margin:40px 0 28px}
-.tl li.tl-ads{padding:0 0 30px;display:block}
-.tl li.tl-ads::before{display:none}
-.tl li.tl-ads .adband{margin:0}
-.home-sec .adband{margin:8px 0 0}
 .tt-box.bypage .tt-mark{margin-top:6px}
 
 /* the map at the head of the City */
@@ -1431,93 +1421,350 @@ svg.curfew .cf-g{font-size:7px;fill:var(--void)}
 
 /* ------------------------------------------------------------------ the ads
    The houses' ads, which the archive carries as a sourcebook carries its advertisers' (Dylan, October 4: a place
-   they have paid to advertise on, seamless through the site), each drawn to be read as an ad at a glance. Each
-   house keeps one look: a screen that glows, one run in reverse, one with a crawl, a web banner with its button,
-   a billboard under its lamps, or a warning between hazard bands. */
-.ad{position:relative;container-type:inline-size;display:grid;align-content:start;margin:0;color:var(--grace);background:var(--void);overflow:hidden;line-height:1.4}
+   they have paid to advertise on, seamless through the site, a high density, each one a link like an ad on the web,
+   and each a design of its own, made to catch the eye). Every part of an ad keeps a place of its own in the ad's
+   grid, so nothing lies over anything else, and on a narrow column each design stacks into one column. */
+.adband{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:36px 0;align-items:stretch}
+.adband.wide{grid-template-columns:minmax(0,1fr)}
+@media (max-width:759px){.adband{grid-template-columns:minmax(0,1fr);margin:28px 0}.adband > .ad-a:nth-child(n+2){display:none}}
+.rtext .adband{margin:40px 0}
+.tl li.tl-ads{padding:0 0 30px;display:block}
+.tl li.tl-ads::before{display:none}
+.tl li.tl-ads .adband{margin:0}
+.home-sec .adband{margin:8px 0 0}
+.lcards > .ad-a.in-grid{min-height:100%}
+a.ad-a{display:block;min-width:0;container-type:inline-size;color:var(--grace);text-decoration:none;background:none;padding:0;cursor:pointer}
+a.ad-a:hover{background:none;color:var(--grace)}
+a.ad-a:focus-visible{outline:2px solid var(--ichor);outline-offset:4px}
+@media (hover:hover){a.ad-a:hover > .ad{outline:2px solid var(--ichor);outline-offset:3px}}
+a.ad-a > .ad{height:100%}
+.ad{position:relative;box-sizing:border-box;display:grid;align-content:stretch;margin:0;color:var(--grace);background:var(--void);overflow:hidden;line-height:1.4;min-width:0}
+.ad > *{min-width:0}
 .ad p{margin:0}
-.ad-tag{position:absolute;top:6px;right:8px;z-index:2;font-size:8px;line-height:12px}
-.ad-art{display:grid;place-items:center;line-height:0}
-.ad-brand{font-family:var(--px);font-size:16px;line-height:24px;-webkit-font-smoothing:none}
-.ad-head{font-family:var(--px);font-size:24px;line-height:28px;-webkit-font-smoothing:none;overflow-wrap:anywhere}
-.ad-body{font-size:16px;line-height:1.4}
-.ad-fine{font-size:8px;line-height:12px}
-@container (min-width:380px){.ad-head{font-size:32px;line-height:36px}}
-@container (min-width:540px){.ad-head{font-size:40px;line-height:44px}}
+.ad-tag{grid-area:tag;justify-self:end;font-size:8px;line-height:12px;-webkit-font-smoothing:none}
+.ad-art{grid-area:art;display:grid;place-items:center;line-height:0}
+.ad-brand{grid-area:brand;font-family:var(--px);font-size:16px;line-height:24px;-webkit-font-smoothing:none;overflow-wrap:anywhere}
+.ad-head{grid-area:head;font-family:var(--px);font-size:24px;line-height:28px;-webkit-font-smoothing:none}
+.ad-body{grid-area:body;font-size:16px;line-height:1.4}
+.ad-fine{grid-area:fine;font-size:8px;line-height:12px}
+@container (min-width:420px){.ad-head{font-size:32px;line-height:36px}}
+@container (min-width:620px){.ad-head{font-size:40px;line-height:44px}}
 
-/* a screen that glows: the mark over an ICHOR haze, the name on an ICHOR bar, the line big */
-.look-glow{border:2px solid var(--ichor);grid-template-rows:auto auto auto 1fr auto}
-.look-glow .ad-tag{color:var(--void);background:var(--ichor);padding:0 4px}
-.look-glow .ad-art{padding:28px 16px 22px;background:var(--void) var(--d25i);background-size:8px 8px;border-bottom:2px solid var(--ichor)}
+/* 1. a screen that glows: the mark in an ICHOR haze, the name on an ICHOR bar, the line big */
+.look-glow{border:2px solid var(--ichor);grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "art" "brand" "head" "body" "fine";grid-template-rows:auto auto auto auto 1fr auto}
+.look-glow .ad-tag{justify-self:stretch;text-align:right;background:var(--ichor);color:var(--void);padding:2px 8px}
+.look-glow .ad-art{padding:22px 16px;background:var(--void) var(--d25i);background-size:8px 8px;border-bottom:2px solid var(--ichor)}
 .look-glow .ad-art canvas{outline:2px solid var(--void);outline-offset:6px;background:var(--void)}
 .look-glow .ad-brand{background:var(--ichor);color:var(--void);padding:4px 16px;letter-spacing:2px}
-.look-glow .ad-head{padding:14px 16px 8px;color:var(--grace)}
-.look-glow .ad-body{padding:0 16px 10px}
-.look-glow .ad-fine{padding:6px 16px 10px;color:var(--ichor);border-top:2px dotted var(--ichor)}
+.look-glow .ad-head{padding:14px 16px 8px}
+.look-glow .ad-body{padding:0 16px 12px}
+.look-glow .ad-fine{padding:8px 16px 10px;color:var(--ichor);border-top:2px dashed var(--ichor)}
+@container (min-width:700px){.look-glow{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"tag tag" "art brand" "art head" "art body" "art fine";grid-template-rows:auto auto auto 1fr auto}.look-glow .ad-art{border-bottom:0;border-right:2px solid var(--ichor);padding:22px 48px}}
 @media (prefers-reduced-motion:no-preference){.look-glow .ad-head{animation:ad-flick 9s steps(1) infinite}}
-@keyframes ad-flick{0%,96%,100%{opacity:1}97%{opacity:.35}98%{opacity:1}99%{opacity:.6}}
+@keyframes ad-flick{0%,96%,100%{visibility:visible}97%,99%{visibility:hidden}}
 
-/* a screen run in reverse: SIGNAL ground, VOID ink, the line as loud as it goes */
-.look-invert{background:var(--signal);color:var(--void);border:2px solid var(--signal);padding:16px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand art" "head art" "body body" "fine fine";grid-template-rows:auto auto 1fr auto;column-gap:14px;row-gap:8px}
+/* 2. a screen run in reverse: SIGNAL ground, VOID ink */
+.look-invert{background:var(--signal);color:var(--void);padding:10px 16px 16px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"tag tag" "brand art" "head art" "body body" "fine fine";grid-template-rows:auto auto auto 1fr auto;column-gap:14px;row-gap:8px}
 .look-invert .ad-tag{color:var(--void)}
-.look-invert .ad-brand{grid-area:brand;align-self:end;color:var(--signal);background:var(--void);justify-self:start;padding:0 8px;margin-top:10px}
-.look-invert .ad-head{grid-area:head;color:var(--void)}
-.look-invert .ad-art{grid-area:art;align-self:start;margin-top:10px}
-.look-invert .ad-art canvas{border:4px solid var(--void)}
-.look-invert .ad-body{grid-area:body;color:var(--void)}
-.look-invert .ad-fine{grid-area:fine;color:var(--void);border-top:2px solid var(--void);padding-top:6px}
+.look-invert .ad-brand{align-self:end;justify-self:start;color:var(--signal);background:var(--void);padding:0 8px}
+.look-invert .ad-head{color:var(--void);align-self:start}
+.look-invert .ad-art{align-self:start}
+.look-invert .ad-art canvas{border:4px solid var(--void);background:var(--void)}
+.look-invert .ad-body{color:var(--void)}
+.look-invert .ad-fine{color:var(--void);border-top:2px solid var(--void);padding-top:6px}
 
-/* a screen with a crawl along its foot */
-.look-ticker{border:2px solid var(--signal);border-width:6px 2px 0;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"art brand" "art head" "body body" "fine fine" "crawl crawl";grid-template-rows:auto auto 1fr auto auto;column-gap:14px}
-.look-ticker .ad-tag{color:var(--signal)}
-.look-ticker .ad-art{grid-area:art;padding:14px 0 0 14px;align-self:start}
+/* 3. a screen with a crawl along its foot */
+.look-ticker{border:2px solid var(--signal);border-top-width:6px;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"tag tag" "art brand" "art head" "body body" "fine fine" "crawl crawl";grid-template-rows:auto auto auto 1fr auto auto;column-gap:14px}
+.look-ticker .ad-tag{color:var(--signal);padding:4px 10px 0}
+.look-ticker .ad-art{padding:4px 0 0 14px;align-self:start}
 .look-ticker .ad-art canvas{border:2px solid var(--signal)}
-.look-ticker .ad-brand{grid-area:brand;color:var(--signal);padding:22px 14px 0 0}
-.look-ticker .ad-head{grid-area:head;color:var(--grace);padding:2px 14px 10px 0}
-.look-ticker .ad-body{grid-area:body;padding:4px 14px 8px}
-.look-ticker .ad-fine{grid-area:fine;padding:0 14px 10px;color:var(--signal)}
+.look-ticker .ad-brand{color:var(--signal);padding:4px 14px 0 0;align-self:end}
+.look-ticker .ad-head{padding:2px 14px 8px 0}
+.look-ticker .ad-body{padding:8px 14px}
+.look-ticker .ad-fine{padding:0 14px 10px;color:var(--signal)}
 .ad-crawl{grid-area:crawl;overflow:hidden;white-space:nowrap;background:var(--ichor);color:var(--void);font-size:16px;line-height:24px}
 .ad-crawl span{display:inline-block;padding-left:100%}
 @media (prefers-reduced-motion:no-preference){.ad-crawl span{animation:ad-crawl 40s steps(400) infinite}}
 @keyframes ad-crawl{to{transform:translateX(-100%)}}
 
-/* a web banner: the mark in its box, the line big, the button to press */
-.look-banner{border:2px solid var(--signal);padding:14px 16px;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"art brand" "art head" "body body" "fine cta";grid-template-rows:auto auto 1fr auto;column-gap:16px;row-gap:6px;background:var(--void) var(--d12s);background-size:8px 8px}
+/* 4. a web banner: the mark in its box over a dotted ground, the line big, the button to press */
+.look-banner{border:2px solid var(--signal);padding:10px 16px 16px;background:var(--void) var(--d12s);background-size:8px 8px;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"tag tag" "art brand" "art head" "body body" "fine cta";grid-template-rows:auto auto auto 1fr auto;column-gap:16px;row-gap:6px}
 .look-banner .ad-tag{color:var(--signal);background:var(--void);padding:0 4px}
-.look-banner .ad-art{grid-area:art;align-self:start;background:var(--void);border:2px solid var(--signal);padding:6px}
-.look-banner .ad-brand{grid-area:brand;color:var(--ichor);align-self:end;margin-top:8px;justify-self:start;background:var(--void);padding:0 4px;margin-left:-4px}
-.look-banner .ad-head{grid-area:head;color:var(--grace);background:var(--void);justify-self:start;padding:0 4px;margin-left:-4px}
-.look-banner .ad-body{grid-area:body;background:var(--void);padding:6px 8px;margin:4px -8px 0}
-.look-banner .ad-fine{grid-area:fine;align-self:center;color:var(--signal);background:var(--void);justify-self:start;padding:0 4px}
-.ad-cta{grid-area:cta;align-self:center;justify-self:end;background:var(--ichor);color:var(--void);font-size:16px;line-height:24px;padding:4px 12px;box-shadow:4px 4px 0 var(--signal);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-@container (max-width:340px){.look-banner{grid-template-areas:"art brand" "art head" "body body" "fine fine" "cta cta"}.ad-cta{justify-self:start;margin-top:4px}}
+.look-banner .ad-art{align-self:start;background:var(--void);border:2px solid var(--signal);padding:6px}
+.look-banner .ad-brand{color:var(--ichor);align-self:end;justify-self:start;background:var(--void);padding:0 4px}
+.look-banner .ad-head{justify-self:start;background:var(--void);padding:0 4px}
+.look-banner .ad-body{background:var(--void);padding:6px 8px;margin-top:4px}
+.look-banner .ad-fine{align-self:center;justify-self:start;color:var(--signal);background:var(--void);padding:0 4px}
+.ad-cta{grid-area:cta;align-self:center;justify-self:end;background:var(--ichor);color:var(--void);font-size:16px;line-height:24px;padding:4px 12px;margin:0 4px 4px 0;box-shadow:4px 4px 0 var(--signal);max-width:100%;text-align:center}
 
-/* a billboard under its lamps: the frame in SIGNAL, the line as big as it goes, the mark at the side */
-.look-billboard{border:6px solid var(--signal);padding:26px 18px 16px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand art" "head art" "body body" "fine fine";grid-template-rows:auto auto 1fr auto;column-gap:14px;row-gap:8px;background:var(--void);box-shadow:inset 0 0 0 2px var(--void),inset 0 0 0 4px var(--ichor)}
-.ad-lamps{position:absolute;top:8px;left:14px;right:14px;height:4px;background:linear-gradient(90deg,var(--ichor) 0 4px,transparent 4px) 0 0/20px 4px repeat-x}
-.look-billboard .ad-tag{top:auto;bottom:8px;right:12px;color:var(--signal)}
-.look-billboard .ad-brand{grid-area:brand;color:var(--signal);letter-spacing:3px}
-.look-billboard .ad-head{grid-area:head;color:var(--ichor);font-size:32px;line-height:34px}
-@container (min-width:380px){.look-billboard .ad-head{font-size:40px;line-height:42px}}
-@container (min-width:540px){.look-billboard .ad-head{font-size:48px;line-height:50px}}
-.look-billboard .ad-art{grid-area:art;align-self:center}
-.look-billboard .ad-body{grid-area:body}
-.look-billboard .ad-fine{grid-area:fine;color:var(--signal);padding-right:110px}
+/* 5. a billboard under its lamps, in a heavy frame */
+.look-billboard{border:6px solid var(--signal);box-shadow:inset 0 0 0 2px var(--void),inset 0 0 0 4px var(--ichor);padding:28px 18px 14px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand art" "head art" "body body" "fine tag";grid-template-rows:auto auto 1fr auto;column-gap:14px;row-gap:8px}
+.ad-lamps{position:absolute;top:10px;left:14px;right:14px;height:4px;background:linear-gradient(90deg,var(--ichor) 0 4px,transparent 4px) 0 0/20px 4px repeat-x}
+.look-billboard .ad-tag{align-self:end;color:var(--signal)}
+.look-billboard .ad-brand{color:var(--signal);letter-spacing:3px}
+.look-billboard .ad-head{color:var(--ichor);font-size:32px;line-height:34px}
+@container (min-width:420px){.look-billboard .ad-head{font-size:40px;line-height:42px}}
+@container (min-width:620px){.look-billboard .ad-head{font-size:48px;line-height:50px}}
+.look-billboard .ad-art{align-self:center}
+.look-billboard .ad-fine{color:var(--signal);align-self:end}
 
-/* a warning between hazard bands, its line stencilled big in ICHOR */
-.look-stencil{border:2px solid var(--ichor);padding:0 16px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"band band" "brand art" "head head" "body body" "fine fine" "band2 band2";grid-template-rows:auto auto auto 1fr auto auto;column-gap:12px;row-gap:8px}
+/* 6. a warning between hazard bands, its line stencilled big */
+.look-stencil{border:2px solid var(--ichor);padding:0 16px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"band band" "tag tag" "brand art" "head head" "body body" "fine fine" "band2 band2";grid-template-rows:auto auto auto auto 1fr auto auto;column-gap:12px;row-gap:8px}
 .look-stencil::before,.look-stencil::after{content:"";height:16px;margin:0 -16px;background:repeating-linear-gradient(45deg,var(--ichor) 0 10px,var(--void) 10px 20px)}
 .look-stencil::before{grid-area:band}
-.look-stencil::after{grid-area:band2}
-.look-stencil .ad-tag{top:22px;color:var(--ichor)}
-.look-stencil .ad-brand{grid-area:brand;align-self:end;justify-self:start;color:var(--void);background:var(--signal);padding:0 8px;margin-top:14px}
-.look-stencil .ad-head{grid-area:head;color:var(--ichor);font-size:32px;line-height:34px;letter-spacing:1px;overflow-wrap:normal}
-@container (min-width:380px){.look-stencil .ad-head{font-size:40px;line-height:42px}}
-.look-stencil .ad-art{grid-area:art;align-self:end;margin-top:14px}
-.look-stencil .ad-body{grid-area:body}
-.look-stencil .ad-fine{grid-area:fine;color:var(--signal);padding-bottom:4px}
+.look-stencil::after{grid-area:band2;margin-top:4px}
+.look-stencil .ad-tag{color:var(--ichor)}
+.look-stencil .ad-brand{align-self:end;justify-self:start;color:var(--void);background:var(--signal);padding:0 8px}
+.look-stencil .ad-head{color:var(--ichor);font-size:32px;line-height:34px;letter-spacing:1px}
+@container (min-width:420px){.look-stencil .ad-head{font-size:40px;line-height:42px}}
+.look-stencil .ad-art{align-self:end}
+.look-stencil .ad-fine{color:var(--signal)}
 
-.lcards > .ad.in-grid{min-height:100%}
+/* 7. a terminal typing itself out on the Mesh */
+.look-terminal{border:2px solid var(--signal);grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"bar bar" "tag tag" "line art" "head art" "body body" "fine fine";grid-template-rows:auto auto auto auto 1fr auto;column-gap:14px;row-gap:6px;padding-bottom:12px}
+.ad-bar{grid-area:bar;display:flex;align-items:center;gap:6px;background:var(--signal);color:var(--void);padding:4px 8px;font-size:8px;line-height:12px}
+.ad-bar i{width:8px;height:8px;background:var(--void)}
+.ad-bar i:first-child{background:var(--ichor)}
+.ad-bar span{margin-left:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.look-terminal .ad-tag{color:var(--signal);padding:0 10px}
+.ad-line{grid-area:line;color:var(--signal);font-size:16px;line-height:24px;padding:0 14px;overflow-wrap:anywhere}
+.look-terminal .ad-head{padding:0 14px}
+.ad-cur{display:inline-block;width:.55em;height:.85em;background:var(--ichor);vertical-align:-.08em;margin-left:6px}
+@media (prefers-reduced-motion:no-preference){.ad-cur{animation:ad-blink 1s steps(1) infinite}}
+@keyframes ad-blink{50%{visibility:hidden}}
+.look-terminal .ad-art{align-self:start;padding-right:14px}
+.look-terminal .ad-art canvas{border:2px dashed var(--signal);padding:4px}
+.look-terminal .ad-body{padding:4px 14px 0;font-family:var(--px);font-size:16px;line-height:24px;color:var(--signal);-webkit-font-smoothing:none}
+.look-terminal .ad-fine{color:var(--ichor);padding:4px 14px 0}
+
+/* 8. a neon sign on a dark wall, its name outlined in ICHOR tube and its line in SIGNAL */
+.look-neon{border:2px solid var(--void);outline:2px solid var(--signal);outline-offset:-8px;padding:22px 22px 20px;background:var(--void) var(--d12s);background-size:8px 8px;text-align:center;justify-items:center;grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "art" "brand" "head" "body" "fine";grid-template-rows:auto auto auto auto 1fr auto;row-gap:10px}
+.look-neon .ad-tag{justify-self:end;color:var(--signal);background:var(--void);padding:0 4px}
+.look-neon .ad-art canvas{background:var(--void);border:2px solid var(--ichor)}
+.look-neon .ad-brand{font-size:24px;line-height:32px;color:var(--void);letter-spacing:3px;padding:2px 10px;text-shadow:2px 0 0 var(--ichor),-2px 0 0 var(--ichor),0 2px 0 var(--ichor),0 -2px 0 var(--ichor),2px 2px 0 var(--ichor),-2px -2px 0 var(--ichor),2px -2px 0 var(--ichor),-2px 2px 0 var(--ichor)}
+@container (min-width:420px){.look-neon .ad-brand{font-size:32px;line-height:40px}}
+@container (min-width:620px){.look-neon .ad-brand{font-size:40px;line-height:48px}}
+.look-neon .ad-head{color:var(--signal);background:var(--void);padding:4px 10px}
+.look-neon .ad-body{background:var(--void);padding:8px 12px;max-width:min(40ch,100%);font-style:italic}
+.look-neon .ad-fine{color:var(--ichor);background:var(--void);padding:0 6px}
+@media (prefers-reduced-motion:no-preference){.look-neon .ad-brand{animation:ad-neon 6s steps(1) infinite}}
+@keyframes ad-neon{0%,88%,100%{color:var(--void)}89%,91%{color:var(--ichor)}}
+
+/* 9. a price as big as the column allows, on ICHOR */
+.look-price{background:var(--ichor);color:var(--void);padding:10px 16px 16px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"tag tag" "brand art" "big art" "what what" "head head" "body body" "fine fine";grid-template-rows:auto auto auto auto auto 1fr auto;row-gap:6px;column-gap:12px}
+.look-price .ad-tag{color:var(--void)}
+.look-price .ad-brand{background:var(--void);color:var(--ichor);justify-self:start;align-self:start;padding:0 8px}
+.ad-big{grid-area:big;display:flex;flex-wrap:wrap;align-items:flex-end;column-gap:10px;font-family:var(--px);-webkit-font-smoothing:none}
+.ad-big b{font-weight:400;font-size:80px;line-height:72px}
+.ad-big span{font-size:16px;line-height:24px;padding-bottom:4px}
+.ad-what{grid-area:what;font-size:16px;line-height:24px;border-bottom:4px solid var(--void);padding-bottom:8px}
+.look-price .ad-head{color:var(--void);padding-top:4px}
+.look-price .ad-art{align-self:start}
+.look-price .ad-art canvas{background:var(--void);border:4px solid var(--void)}
+.look-price .ad-body{color:var(--void)}
+.look-price .ad-fine{color:var(--void)}
+
+/* 10. a stock running out, the count big and the meter nearly empty */
+.look-stock{border:2px solid var(--ichor);padding:10px 16px 16px;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"tag tag" "art brand" "art head" "stock stock" "body body" "fine fine";grid-template-rows:auto auto auto auto 1fr auto;column-gap:14px;row-gap:8px}
+.look-stock .ad-tag{color:var(--ichor)}
+.look-stock .ad-art{align-self:start}
+.look-stock .ad-art canvas{border:2px solid var(--ichor)}
+.look-stock .ad-brand{color:var(--void);background:var(--ichor);justify-self:start;align-self:end;padding:0 8px}
+.ad-stock{grid-area:stock;border:2px solid var(--signal);padding:10px 12px 12px}
+.ad-stock .ad-big b{font-size:64px;line-height:56px;color:var(--ichor)}
+.ad-stock .ad-big span{color:var(--signal)}
+.ad-meter{display:block;height:12px;border:2px solid var(--signal);margin-top:10px}
+.ad-meter i{display:block;width:8%;height:100%;background:var(--ichor)}
+@media (prefers-reduced-motion:no-preference){.ad-meter i{animation:ad-blink 1.4s steps(1) infinite}}
+.look-stock .ad-fine{color:var(--signal)}
+
+/* 11. a clock counting down to the next Lauds, by the reader's own clock */
+.look-countdown{border:2px solid var(--signal);padding:10px 16px 16px;text-align:center;justify-items:center;grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "art" "brand" "head" "count" "body" "fine";grid-template-rows:auto auto auto auto auto 1fr auto;row-gap:8px;background:var(--void) var(--d12s);background-size:8px 8px}
+.look-countdown .ad-tag{color:var(--signal);background:var(--void);padding:0 4px}
+.look-countdown .ad-art canvas{background:var(--void);border:2px solid var(--signal)}
+.look-countdown .ad-brand{color:var(--signal);background:var(--void);padding:0 8px;letter-spacing:4px}
+.look-countdown .ad-head{background:var(--void);padding:2px 10px}
+.ad-count{grid-area:count;background:var(--ichor);color:var(--void);padding:6px 16px 8px;font-size:8px;line-height:12px;box-shadow:4px 4px 0 var(--void)}
+.ad-count b{display:block;font-weight:400;font-size:32px;line-height:36px;letter-spacing:2px}
+.look-countdown .ad-body{background:var(--void);padding:6px 10px;max-width:min(42ch,100%)}
+.look-countdown .ad-fine{color:var(--signal);background:var(--void);padding:0 6px}
+
+/* 12. a menu of what the house sells, each in its box */
+.look-menu{border:6px double var(--signal);padding:12px 16px 16px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"tag tag" "brand art" "head art" "items items" "body body" "fine fine";grid-template-rows:auto auto auto auto 1fr auto;row-gap:8px;column-gap:12px}
+.look-menu .ad-tag{color:var(--signal)}
+.look-menu .ad-brand{color:var(--ichor);letter-spacing:2px;align-self:end}
+.look-menu .ad-art{align-self:start}
+.ad-items{grid-area:items;list-style:none;margin:4px 0;padding:0}
+.look-menu .ad-items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.look-menu .ad-items li{border:2px solid var(--ichor);color:var(--ichor);text-align:center;padding:10px 2px;font-size:8px;line-height:12px;overflow-wrap:anywhere}
+@container (min-width:380px){.look-menu .ad-items li{font-size:16px;line-height:20px}}
+.look-menu .ad-items li:nth-child(2){background:var(--ichor);color:var(--void)}
+.look-menu .ad-fine{color:var(--signal)}
+
+/* 13. the mark as large as the ad allows on an ICHOR panel, the words beside it */
+.look-hero{border:2px solid var(--signal);grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"tag art" "brand art" "head art" "body art" "fine art";grid-template-rows:auto auto auto 1fr auto}
+.look-hero .ad-tag{justify-self:start;color:var(--signal);padding:8px 16px 0}
+.look-hero .ad-art{background:var(--ichor);padding:18px;border-left:2px solid var(--signal)}
+.look-hero .ad-art canvas{background:var(--void);border:4px solid var(--void)}
+.look-hero .ad-brand{justify-self:start;background:var(--signal);color:var(--void);padding:0 8px;margin:6px 16px 0}
+.look-hero .ad-head{padding:8px 16px 0}
+.look-hero .ad-body{padding:8px 16px}
+.look-hero .ad-fine{color:var(--signal);padding:0 16px 12px}
+
+/* 14. a Locket's screen, the house's line come up on it */
+.look-phone{border:2px solid var(--signal);padding:10px 16px 16px;background:var(--void) var(--d12s);background-size:8px 8px;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"tag tag" "phone brand" "phone head" "phone body" "phone fine";grid-template-rows:auto auto auto 1fr auto;column-gap:20px;row-gap:8px}
+.look-phone .ad-tag{color:var(--signal);background:var(--void);padding:0 4px}
+.ad-phone{grid-area:phone;align-self:start;display:grid;justify-items:center;gap:10px;width:132px;box-sizing:border-box;padding:12px 10px 18px;border:4px solid var(--signal);background:var(--void);box-shadow:6px 6px 0 var(--ichor)}
+.ad-phone .ad-art,.ad-plan .ad-art,.ad-card .ad-art,.ad-tk .ad-art,.ad-tk .ad-brand,.ad-tk .ad-head{grid-area:auto}
+.ad-notch{width:36px;height:6px;background:var(--signal)}
+.ad-note{display:grid;gap:2px;width:100%;box-sizing:border-box;background:var(--ichor);color:var(--void);padding:6px;font-size:8px;line-height:12px}
+.ad-note b{font-weight:400}
+.look-phone .ad-brand{color:var(--signal);background:var(--void);justify-self:start;align-self:end;padding:0 4px}
+.look-phone .ad-head{background:var(--void);justify-self:start;padding:0 4px}
+.look-phone .ad-body{background:var(--void);padding:6px 8px}
+.look-phone .ad-fine{color:var(--ichor);background:var(--void);justify-self:start;padding:0 4px}
+
+/* 15. three figures, each on its own bar */
+.look-stats{border:2px solid var(--ichor);border-left-width:14px;padding:10px 16px 16px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"tag tag" "brand art" "head art" "items items" "body body" "fine fine";grid-template-rows:auto auto auto auto 1fr auto;column-gap:12px;row-gap:8px}
+.look-stats .ad-tag{color:var(--ichor)}
+.look-stats .ad-brand{color:var(--ichor);letter-spacing:2px;align-self:end}
+.look-stats .ad-art{align-self:start}
+.look-stats .ad-items{display:grid;gap:6px;justify-items:start}
+.look-stats .ad-items li{font-size:16px;line-height:24px;color:var(--void);background:var(--signal);padding:4px 10px}
+.look-stats .ad-items li:nth-child(2){background:var(--ichor)}
+.look-stats .ad-items li:nth-child(3){background:var(--void);color:var(--signal);box-shadow:inset 0 0 0 2px var(--signal)}
+.look-stats .ad-fine{color:var(--signal)}
+
+/* 16. a house's particulars, under the house's bar */
+.look-checklist{border:2px solid var(--signal);padding:0 16px 16px;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"tag tag" "art brand" "art head" "items items" "body body" "fine fine";grid-template-rows:auto auto auto auto 1fr auto;column-gap:14px;row-gap:8px}
+.look-checklist .ad-tag{justify-self:stretch;margin:0 -16px 6px;padding:4px 16px;background:var(--signal);color:var(--void);text-align:right}
+.look-checklist .ad-art{align-self:start}
+.look-checklist .ad-art canvas{border:2px solid var(--signal)}
+.look-checklist .ad-brand{color:var(--signal);align-self:end}
+.look-checklist .ad-items li{font-size:16px;line-height:24px;color:var(--grace);border-bottom:2px dashed var(--signal);padding:6px 0;overflow-wrap:anywhere}
+.look-checklist .ad-items li::before{content:"[+] ";color:var(--ichor)}
+.look-checklist .ad-fine{color:var(--signal)}
+
+/* 17. a drawing on the board, the works laid out on squared paper */
+.look-blueprint{border:2px solid var(--signal);padding:10px 16px 16px;background-color:var(--void);background-image:linear-gradient(var(--signal) 1px,transparent 1px),linear-gradient(90deg,var(--signal) 1px,transparent 1px);background-size:24px 24px;grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "brand" "head" "plan" "body" "fine";grid-template-rows:auto auto auto auto 1fr auto;row-gap:8px}
+.look-blueprint .ad-tag{background:var(--void);color:var(--signal);padding:0 4px}
+.look-blueprint .ad-brand{justify-self:start;background:var(--void);color:var(--signal);padding:0 6px;letter-spacing:3px}
+.look-blueprint .ad-head{justify-self:start;background:var(--void);padding:2px 6px}
+.ad-plan{grid-area:plan;display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center;background:var(--void);border:2px dashed var(--signal);padding:12px}
+.ad-plan .ad-items{grid-area:auto;margin:0;display:grid;gap:8px}
+.ad-plan li{font-size:16px;line-height:20px;color:var(--grace);border-left:4px solid var(--ichor);padding-left:8px}
+.look-blueprint .ad-body{background:var(--void);padding:6px 8px}
+.look-blueprint .ad-fine{justify-self:start;background:var(--void);color:var(--signal);padding:0 4px}
+
+/* 18. a subscriber's card, a household's number left to fill in */
+.look-card{border:2px solid var(--ichor);padding:10px 16px 16px;grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "card" "head" "body" "fine";grid-template-rows:auto auto auto 1fr auto;row-gap:12px}
+.look-card .ad-tag{color:var(--ichor)}
+.ad-card{grid-area:card;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"chip brand art" "l1 l1 art" "l2 l2 art";column-gap:12px;row-gap:8px;align-items:center;background:var(--ichor);color:var(--void);padding:14px 16px;box-shadow:6px 6px 0 var(--signal);max-width:420px;margin-right:6px}
+.ad-chip{grid-area:chip;width:28px;height:20px;background:var(--void) var(--d50s);background-size:4px 4px;border:2px solid var(--void)}
+.ad-card .ad-brand{grid-area:brand;color:var(--void);letter-spacing:3px}
+.ad-card .ad-art{grid-area:art}
+.ad-card .ad-art canvas{background:var(--void);border:2px solid var(--void)}
+.ad-cl{font-size:8px;line-height:12px}
+.ad-card .ad-cl:nth-of-type(2){grid-area:l1}
+.ad-card .ad-cl:nth-of-type(3){grid-area:l2}
+.ad-blank{display:inline-block;width:64px;height:8px;border-bottom:2px solid var(--void)}
+.look-card .ad-head{color:var(--ichor)}
+.look-card .ad-fine{color:var(--signal)}
+
+/* 19. a passage ticket with its stub */
+.look-ticket{border:2px solid var(--signal);padding:10px 16px 16px;grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "tk" "body" "fine";grid-template-rows:auto auto 1fr auto;row-gap:10px}
+.look-ticket .ad-tag{color:var(--signal)}
+.ad-tk{grid-area:tk;display:grid;grid-template-columns:minmax(0,1fr) auto;background:var(--signal);color:var(--void)}
+.ad-tk-main{display:grid;gap:6px;padding:12px 14px;border-right:2px dashed var(--void);min-width:0}
+.ad-tk .ad-brand{color:var(--void);letter-spacing:2px}
+.ad-route{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;font-size:16px;line-height:20px}
+.ad-route b{font-weight:400;color:var(--ichor)}
+.ad-tk .ad-head{color:var(--void);font-size:24px;line-height:28px}
+.ad-tk-stub{display:grid;justify-items:center;align-content:center;gap:8px;padding:12px;width:96px;box-sizing:border-box;font-size:8px;line-height:12px;text-align:center}
+.ad-tk-stub canvas{background:var(--void)}
+.ad-code{display:block;width:72px;height:28px;background:repeating-linear-gradient(90deg,var(--void) 0 2px,transparent 2px 4px,var(--void) 4px 8px,transparent 8px 10px)}
+.look-ticket .ad-fine{color:var(--signal)}
+
+/* 20. an old printed notice between two rules */
+.look-print{border:2px solid var(--signal);outline:2px solid var(--signal);outline-offset:-8px;padding:20px 22px 22px;text-align:center;justify-items:center;grid-template-columns:minmax(0,1fr);row-gap:10px}
+.look-print > *{grid-area:auto;max-width:100%}
+.look-print .ad-tag{justify-self:end;color:var(--signal)}
+.ad-rule{width:70%;height:6px;box-sizing:border-box;border-block:2px solid var(--signal)}
+.look-print .ad-brand{font-family:var(--fellsc);font-size:28px;line-height:1.1;letter-spacing:6px;color:var(--ichor)}
+.look-print .ad-head{font-family:var(--fell);font-style:italic;font-size:28px;line-height:1.15;letter-spacing:1px}
+@container (min-width:420px){.look-print .ad-head{font-size:34px}}
+.look-print .ad-body{font-style:italic;max-width:min(36ch,100%)}
+.look-print .ad-fine{color:var(--signal)}
+
+/* 21. a page of the press, set and inked */
+.look-press{border:2px solid var(--signal);padding:10px 16px 16px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"tag tag" "brand page" "head page" "art page" "body body" "fine fine";grid-template-rows:auto auto auto 1fr auto auto;column-gap:16px;row-gap:8px}
+.look-press .ad-tag{color:var(--signal)}
+.look-press .ad-brand{color:var(--ichor);letter-spacing:2px}
+.look-press .ad-art{justify-self:start;align-self:start}
+.ad-page{grid-area:page;align-self:start;width:150px;box-sizing:border-box;background:var(--signal);padding:8px;box-shadow:-6px 6px 0 var(--ichor)}
+.ad-mast{margin:0 0 6px;font-family:var(--bl);font-size:22px;line-height:1;color:var(--void);text-align:center;border-bottom:4px double var(--void);padding-bottom:4px}
+.ad-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.ad-cols span{display:grid;gap:4px}
+.ad-cols i{display:block;height:3px;background:var(--void)}
+.ad-cols i:nth-child(3n){width:70%}
+.look-press .ad-fine{color:var(--signal)}
+
+/* not every ad is a box (Dylan, October 4): a neon sign and a Locket hang on the page with no frame, a ticket and a
+   card float with their stubs and chips, the price is cut as a tag with its hole, the loaf's clock rises in a dome,
+   the notice has its corners bitten out and the warning is chamfered, every cut stepped on the pixel grid */
+.look-neon{border:0;outline:0;background:none;padding-top:26px}
+.look-neon::before,.look-neon::after{content:"";position:absolute;top:0;width:2px;height:22px;background:var(--signal)}
+.look-neon::before{left:30%}
+.look-neon::after{right:30%}
+.look-neon .ad-tag{justify-self:center;background:none}
+.look-phone{border:0;background:none;padding:6px 0 0}
+.look-phone .ad-tag{background:none}
+.look-ticket,.look-card{border:0;padding:6px 6px 0 0}
+.ad-tk{clip-path:polygon(0 0,calc(100% - 100px) 0,calc(100% - 100px) 8px,calc(100% - 92px) 8px,calc(100% - 92px) 0,100% 0,100% 100%,calc(100% - 92px) 100%,calc(100% - 92px) calc(100% - 8px),calc(100% - 100px) calc(100% - 8px),calc(100% - 100px) 100%,0 100%)}
+.look-price{clip-path:polygon(28px 0,100% 0,100% 100%,28px 100%,28px calc(50% + 28px),28px calc(50% + 24px),24px calc(50% + 24px),24px calc(50% + 20px),20px calc(50% + 20px),20px calc(50% + 16px),16px calc(50% + 16px),16px calc(50% + 12px),12px calc(50% + 12px),12px calc(50% + 8px),8px calc(50% + 8px),8px calc(50% + 4px),4px calc(50% + 4px),4px calc(50% + 0px),0px calc(50% + 0px),0px calc(50% - 4px),4px calc(50% - 4px),4px calc(50% - 8px),8px calc(50% - 8px),8px calc(50% - 12px),12px calc(50% - 12px),12px calc(50% - 16px),16px calc(50% - 16px),16px calc(50% - 20px),20px calc(50% - 20px),20px calc(50% - 24px),24px calc(50% - 24px),24px calc(50% - 28px),28px calc(50% - 28px),28px calc(50% - 28px));padding-left:48px}
+.look-price::after{content:"";position:absolute;left:12px;top:calc(50% - 4px);width:8px;height:8px;background:var(--void)}
+.look-countdown{clip-path:polygon(0 100%,100% 100%,100% 40px,100.00% 34px,99.38% 34px,99.38% 28px,97.55% 28px,97.55% 22px,94.55% 22px,94.55% 16px,90.45% 16px,90.45% 12px,85.36% 12px,85.36% 8px,79.39% 8px,79.39% 4px,72.70% 4px,72.70% 2px,65.45% 2px,65.45% 0px,57.82% 0px,57.82% 0px,50.00% 0px,50.00% 0px,42.18% 0px,42.18% 0px,42.18% 0px,34.55% 0px,34.55% 2px,34.55% 2px,27.30% 2px,27.30% 4px,27.30% 4px,20.61% 4px,20.61% 8px,20.61% 8px,14.64% 8px,14.64% 12px,14.64% 12px,9.55% 12px,9.55% 16px,9.55% 16px,5.45% 16px,5.45% 22px,5.45% 22px,2.45% 22px,2.45% 28px,2.45% 28px,0.62% 28px,0.62% 34px,0.62% 34px,0.00% 34px,0.00% 40px,0 40px);border:0;padding-top:48px}
+.look-countdown .ad-tag{justify-self:center}
+.look-print{clip-path:polygon(12px 0,calc(100% - 12px) 0,calc(100% - 12px) 6px,calc(100% - 6px) 6px,calc(100% - 6px) 12px,100% 12px,100% calc(100% - 12px),calc(100% - 6px) calc(100% - 12px),calc(100% - 6px) calc(100% - 6px),calc(100% - 12px) calc(100% - 6px),calc(100% - 12px) 100%,12px 100%,12px calc(100% - 6px),6px calc(100% - 6px),6px calc(100% - 12px),0 calc(100% - 12px),0 12px,6px 12px,6px 6px,12px 6px);border:0;box-shadow:inset 0 0 0 6px var(--signal);outline-offset:-12px}
+.look-stencil{clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 4px) calc(100% - 20px),calc(100% - 4px) calc(100% - 16px),calc(100% - 8px) calc(100% - 16px),calc(100% - 8px) calc(100% - 12px),calc(100% - 12px) calc(100% - 12px),calc(100% - 12px) calc(100% - 8px),calc(100% - 16px) calc(100% - 8px),calc(100% - 16px) calc(100% - 4px),calc(100% - 20px) calc(100% - 4px),calc(100% - 20px) calc(100% - 0px),calc(100% - 20px) 100%,0 100%,0 20px,0px 16px,4px 16px,4px 12px,8px 12px,8px 8px,12px 8px,12px 4px,16px 4px,16px 0px,20px 0px)}
+@media (hover:hover){a.ad-a:hover > .look-neon,a.ad-a:hover > .look-phone,a.ad-a:hover > .look-ticket,a.ad-a:hover > .look-card{outline:0}}
+@media (hover:hover){a.ad-a:hover > .look-neon .ad-brand,a.ad-a:hover > .look-phone .ad-head,a.ad-a:hover > .look-ticket .ad-head,a.ad-a:hover > .look-card .ad-head{color:var(--ichor)}}
+@container (max-width:419px){.ad-tk{clip-path:none}.look-price{padding-left:44px}}
+
+/* on a narrow column every design stacks into one column, its mark first */
+@container (max-width:419px){
+  .look-invert{grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "art" "brand" "head" "body" "fine";grid-template-rows:auto auto auto auto 1fr auto}
+  .look-invert .ad-art{justify-self:start}
+  .look-ticker{grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "art" "brand" "head" "body" "fine" "crawl";grid-template-rows:auto auto auto auto 1fr auto auto}
+  .look-ticker .ad-art{justify-self:start;padding:4px 14px 0}
+  .look-ticker .ad-brand,.look-ticker .ad-head{padding-left:14px}
+  .look-banner{grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "art" "brand" "head" "body" "fine" "cta";grid-template-rows:auto auto auto auto 1fr auto auto}
+  .look-banner .ad-art{justify-self:start}
+  .look-banner .ad-cta{justify-self:start;margin-top:6px}
+  .look-billboard{grid-template-columns:minmax(0,1fr);grid-template-areas:"art" "brand" "head" "body" "fine" "tag";grid-template-rows:auto auto auto 1fr auto auto}
+  .look-billboard .ad-art{justify-self:start}
+  .look-terminal{grid-template-columns:minmax(0,1fr);grid-template-areas:"bar" "tag" "line" "art" "head" "body" "fine";grid-template-rows:auto auto auto auto auto 1fr auto}
+  .look-terminal .ad-art{justify-self:start;padding:0 14px}
+  .look-price{grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "brand" "art" "big" "what" "head" "body" "fine";grid-template-rows:auto auto auto auto auto auto 1fr auto}
+  .look-price .ad-art{justify-self:start}
+  .look-stock{grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "art" "brand" "head" "stock" "body" "fine";grid-template-rows:auto auto auto auto auto 1fr auto}
+  .look-stock .ad-art{justify-self:start}
+  .look-menu{grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "art" "brand" "head" "items" "body" "fine";grid-template-rows:auto auto auto auto auto 1fr auto}
+  .look-menu .ad-art{justify-self:start}
+  .look-hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"art" "tag" "brand" "head" "body" "fine";grid-template-rows:auto auto auto auto 1fr auto}
+  .look-hero .ad-art{border-left:0;border-bottom:2px solid var(--signal)}
+  .look-phone{grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "phone" "brand" "head" "body" "fine";grid-template-rows:auto auto auto auto 1fr auto}
+  .look-phone .ad-phone{justify-self:center}
+  .look-stats{grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "art" "brand" "head" "items" "body" "fine";grid-template-rows:auto auto auto auto auto 1fr auto}
+  .look-stats .ad-art{justify-self:start}
+  .look-checklist{grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "art" "brand" "head" "items" "body" "fine";grid-template-rows:auto auto auto auto auto 1fr auto}
+  .look-checklist .ad-art{justify-self:start}
+  .ad-plan{grid-template-columns:minmax(0,1fr)}
+  .ad-tk{grid-template-columns:minmax(0,1fr)}
+  .ad-tk-main{border-right:0;border-bottom:2px dashed var(--void)}
+  .ad-tk-stub{width:auto;grid-auto-flow:column;justify-content:start}
+  .look-press{grid-template-columns:minmax(0,1fr);grid-template-areas:"tag" "brand" "head" "page" "art" "body" "fine";grid-template-rows:auto auto auto auto auto 1fr auto}
+}
 .cf-side .tt-tab.gates{table-layout:fixed}
 .cf-side .tt-tab.gates th:first-child{width:3.6em}
 .cf-side .tt-tab.gates th:last-child{width:3.6em}
@@ -1525,3 +1772,19 @@ svg.curfew .cf-g{font-size:7px;fill:var(--void)}
 @media (max-width:640px){.cm-acts{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.cm-acts .btn{white-space:normal;line-height:1.2}}
 .cf-side .btn,.cm-acts .btn{max-width:100%;box-sizing:border-box;white-space:normal;text-align:center}
 @media (max-width:359px){.bar-in{gap:2px;padding-inline:6px}.links a{padding:12px 1px}.fnd,.thm{padding:12px 1px;margin:0}.fnd svg,.thm svg{width:16px;height:16px}.brand svg{width:18px;height:18px}}
+/* the mark is the way home: on a phone it keeps its full 32 pixels and a tap target the height of the bar */
+@media (max-width:759px){.brand{align-self:stretch;padding:0 6px 0 2px;margin-left:-2px}.brand svg{width:32px;height:32px}}
+/* on a narrow phone the bar takes two rows: the mark, the search and the music above, the four sections below, each
+   with room to be tapped */
+@media (max-width:419px){
+  :root{--bar:96px}
+  .bar-in{flex-wrap:wrap;height:auto;min-height:var(--bar);align-content:stretch;gap:0;padding-inline:var(--gut)}
+  .brand{order:0;height:48px;padding:0 10px 0 0;margin-right:auto}
+  .brand svg{width:32px;height:32px}
+  .fnd{order:1;padding:12px 10px;margin:0}
+  .thm{order:2;padding:12px 0 12px 10px}
+  .fnd svg,.thm svg{width:24px;height:24px}
+  .links{order:3;flex:1 0 100%;height:48px;justify-content:space-between;border-top:2px dotted var(--signal)}
+  .links a{padding:12px 6px;display:flex;align-items:center}
+}
+@media (max-width:359px){.tt-mast.sm .tt-title{font-size:30px}.tt-title{font-size:40px}.rd-title{font-size:32px}}

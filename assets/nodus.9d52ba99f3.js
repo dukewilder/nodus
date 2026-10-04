@@ -734,7 +734,7 @@ function initNumerals(scope) {
   /* a chapter and verse after a book's name is a reference, set whole with its range and never as a clock */
   const BOOK = /\b(?:Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|Samuel|Kings|Chronicles|Ezra|Nehemiah|Esther|Job|Psalms?|Proverbs|Ecclesiastes|Isaiah|Jeremiah|Lamentations|Ezekiel|Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|Malachi|Matthew|Mark|Luke|John|Acts|Romans|Corinthians|Galatians|Ephesians|Philippians|Colossians|Thessalonians|Timothy|Titus|Philemon|Hebrews|James|Peter|Jude|Revelation|Enoch|Jubilees|Sirach|Tobit|Maccabees) \(?$/;
   const VERSE = /^\d+:\d+(?:-\d+(?::\d+)?)?/;
-  const skip = n => n.parentElement && n.parentElement.closest('.px, .hudtxt, pre, button, .tc, .n, .lost, .num, .bna, .hr, .stats, .rd, script, style, template');
+  const skip = n => n.parentElement && n.parentElement.closest('.px, .hudtxt, pre, button, .tc, .n, .lost, .num, .bna, .hr, .stats, .rd, script, style, template, .ad');
   (scope ? $$(NUM_SEL, scope).concat(scope.matches && scope.matches(NUM_SEL) ? [scope] : []) : $$(NUM_SEL)).forEach(root => {
     if (!root || root._num) return;
     root._num = true;
@@ -3082,6 +3082,22 @@ function initSearch() {
   });
 }
 
+/* the ads: Leaven's clock counts down to the next Lauds by the reader's own clock */
+function initAds() {
+  const cs = $$('[data-count]');
+  if (!cs.length) return;
+  const tick = () => {
+    const d = new Date(), t = new Date(d);
+    t.setHours(5, 0, 0, 0);
+    if (t <= d) t.setDate(t.getDate() + 1);
+    let x = Math.floor((t - d) / 1000);
+    const v = [Math.floor(x / 3600), Math.floor(x % 3600 / 60), x % 60].map(n => String(n).padStart(2, '0')).join(':');
+    cs.forEach(c => { c.textContent = v; });
+  };
+  tick();
+  setInterval(tick, 1000);
+}
+
 /* the way back up from far down a long page */
 function initTop() {
   if ($('.totop')) return;
@@ -3114,6 +3130,7 @@ function start() {
   if (PAGE === 'genesis') initGenesis();
   if (PAGE === 'city') initCity();
   initSearch();
+  initAds();
   if (PAGE !== 'map' && PAGE !== 'home') initTop();
 }
 initTheme();
