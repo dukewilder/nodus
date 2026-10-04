@@ -1208,7 +1208,7 @@ canvas.sigil,.logo canvas{width:48px;height:48px}
 table.ptab{border-collapse:collapse;width:100%;margin:14px 0;font-size:16px;line-height:1.45}
 table.ptab td{padding:7px 10px 7px 0;vertical-align:top;background-image:var(--dots-s);background-size:4px 2px;background-repeat:repeat-x;background-position:0 100%}
 table.ptab td + td{text-align:right;font-family:var(--px);font-size:14px;color:var(--ichor);white-space:nowrap;-webkit-font-smoothing:none;padding-right:0}
-/* the city's people: the picture of the place each is known by, never a face (Nodus, Writing the city) */
+/* the city's people: each with a portrait drawn as the cast's are, five to a row on a desk (Dylan, October 4) */
 .chars.city{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
 .chars.city .char-n{font-size:28px}
 @media (max-width:560px){.chars.city{grid-template-columns:repeat(2,minmax(0,1fr))}.chars.city .char-n{font-size:22px}}
