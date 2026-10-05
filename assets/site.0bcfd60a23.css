@@ -1680,7 +1680,7 @@ a.ad-a > .ad{height:100%}
 .ad-route{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;font-size:16px;line-height:20px}
 .ad-route b{font-weight:400;color:var(--ichor)}
 .ad-tk .ad-head{color:var(--void);font-size:24px;line-height:28px}
-.ad-tk-stub{display:grid;justify-items:center;align-content:center;gap:8px;padding:12px;width:96px;box-sizing:border-box;font-size:8px;line-height:12px;text-align:center}
+.ad-tk-stub{display:grid;justify-items:center;align-content:center;gap:8px;padding:12px;width:104px;box-sizing:border-box;font-size:8px;line-height:12px;text-align:center}
 .ad-tk-stub canvas{background:var(--void)}
 .ad-code{display:block;width:72px;height:28px;background:repeating-linear-gradient(90deg,var(--void) 0 2px,transparent 2px 4px,var(--void) 4px 8px,transparent 8px 10px)}
 .look-ticket .ad-fine{color:var(--signal)}
@@ -2294,6 +2294,8 @@ a.ad-a > .ad{height:100%}
 .rs-slot{display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px;padding:12px 0;border-bottom:2px solid var(--signal)}
 .rs-t{color:var(--ichor)}
 .rs-n{margin:0;color:var(--grace)}
+.rs-by{margin:1px 0 0;color:var(--ichor);font-size:13px;letter-spacing:.06em}
+.rs-by::before{content:'PLAYED BY ';color:var(--signal)}
 .rs-d{margin:2px 0 0;font-size:17px;line-height:1.45}
 .rs-chart{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .rs-chart li{display:grid;grid-template-columns:48px minmax(0,1fr);grid-template-areas:"pos text" "pos heat";gap:6px 14px;padding:10px 12px;border:2px solid var(--signal)}
