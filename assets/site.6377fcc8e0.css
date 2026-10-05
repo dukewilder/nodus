@@ -2438,3 +2438,128 @@ canvas.wm{max-width:100%;height:auto}
 .ad-lab p.px:first-of-type{overflow-wrap:anywhere}
 @container (max-width:419px){.ad-wanted{font-size:32px;line-height:36px;letter-spacing:3px}.ad-lab p.px:first-of-type{font-size:8px;line-height:12px}}
 @media (max-width:400px){.cz-n{font-size:40px;line-height:40px}.cz-n2{font-size:32px;line-height:32px}.cz-grid > div{padding:14px}}
+/* ---- grid tiles: an ad in a grid of cards takes the card's own box (Dylan, October 4, late) */
+.lcards > .ad-a.in-grid.at{display:block;position:relative;min-width:0;min-height:0;max-width:none;width:auto;margin:0;align-self:stretch;justify-self:stretch;border:2px solid var(--signal);background:var(--void);color:var(--grace);text-decoration:none;overflow:hidden}
+.at .at-in{display:flex;gap:14px;align-items:flex-start;padding:14px 38px 14px 14px}
+.at .at-p{flex:none;width:92px;height:92px;box-sizing:border-box;padding:0;display:grid;place-items:center;border:2px solid var(--signal);background:var(--void)}
+.at .at-p canvas{display:block}
+.at .at-p canvas.at-por{width:80px;height:80px}
+.at .loc-id{display:grid;gap:4px;align-content:start;min-width:0;flex:1 1 0}
+.at .at-brand{display:block;font-size:8px;line-height:12px;letter-spacing:.5px;color:var(--signal);overflow-wrap:anywhere}
+.at .at-brand.wmb{line-height:0;--wmh:24px}
+.at .at-brand canvas.wm{max-width:100%;height:auto}
+.at .at-head{display:block;font-size:20px;line-height:22px;color:var(--ichor);overflow-wrap:anywhere}
+.at .at-body{font-size:17px;line-height:1.4;-webkit-line-clamp:3;line-clamp:3;color:var(--grace)}
+.at .at-fine{display:block;font-size:8px;line-height:12px;color:var(--signal);overflow-wrap:anywhere}
+.at .at-tag{position:absolute;top:10px;right:10px;font-size:8px;line-height:12px;padding:0 3px;background:var(--signal);color:var(--void)}
+.at:hover .at-head,.at:focus-visible .at-head{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+/* the six treatments, each inside the same box and border */
+.at-ichor{background:var(--ichor) !important}
+.at-ichor .at-head,.at-ichor .at-body,.at-ichor .at-brand,.at-ichor .at-fine{color:var(--void)}
+.at-ichor .at-p{border-color:var(--void)}
+.at-ichor .at-tag{background:var(--void);color:var(--ichor)}
+.at-signal{background:var(--signal) !important}
+.at-signal .at-head,.at-signal .at-body,.at-signal .at-brand,.at-signal .at-fine{color:var(--void)}
+.at-signal .at-p{border-color:var(--void)}
+.at-signal .at-tag{background:var(--void);color:var(--signal)}
+.at-dots{background:var(--void) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6' shape-rendering='crispEdges'%3E%3Crect width='2' height='2' fill='%23F22C70'/%3E%3C/svg%3E") 0 0/6px 6px !important}
+.at-dots .loc-id > *{background:var(--void);justify-self:start;padding:0 4px}
+.at-dots .at-head{color:var(--grace)}
+.at-scan{box-shadow:inset 0 0 0 4px var(--void),inset 0 0 0 6px var(--ichor)}
+.at-scan .at-head{color:var(--signal)}
+.at-scan .at-tag{background:var(--ichor)}
+.at-rule .at-in{padding-left:30px}
+.at-rule::before{content:"";position:absolute;left:0;top:0;bottom:0;width:12px;background:repeating-linear-gradient(180deg,var(--ichor) 0 8px,var(--void) 8px 12px)}
+.at-rule .at-head{color:var(--grace)}
+.at-rule .at-p{border-color:var(--ichor)}
+.at-grid{background:var(--void) linear-gradient(var(--signal) 1px,transparent 1px) 0 0/100% 12px !important}
+.at-grid .loc-id > *{background:var(--void);justify-self:start;padding:0 4px}
+.at-grid .at-head{color:var(--ichor)}
+@media (max-width:420px){.at .at-in{gap:10px;padding:12px 34px 12px 12px}.at .at-p{width:72px;height:72px}.at .at-p canvas.at-por{width:64px;height:64px}.at .at-head{font-size:16px;line-height:20px}}
+/* a band of two sets its ads side by side at their own heights, each centered on the other, so neither is stretched
+   past its design; the round and dropped designs keep a size of their own */
+.adband{align-items:center}
+.adband > .ad-a{align-self:center}
+.adband .look-seal{max-width:360px;margin:0 auto}
+.adband .look-drop{max-width:320px;margin:0 auto}
+.adband .look-shield{max-width:440px;margin:0 auto}
+@media (max-width:759px){.adband.thin{display:none}.adband > .ad-a:nth-child(n+2),.adband > .ad-a:nth-child(n+2):has(.look-receipt){display:none}}
+/* the Tide Table set as a newspaper sets type: each page one flow of columns, balanced to end level, a story running
+   on from the foot of one column to the head of the next (Dylan, October 4, late: no empty space on a newspaper) */
+.np-page{display:block}
+.np-page > *{padding:0}
+.np-leadhead{padding:0 0 10px;border-bottom:2px solid var(--signal);margin-bottom:12px}
+.np-flow{columns:3 280px;column-gap:32px;column-rule:2px solid var(--signal);column-fill:balance}
+.np-flow > *{margin-top:0}
+.np-flow .np-h,.np-flow .np-hl,.np-flow .np-kick,.np-flow .np-dek,.np-flow .np-sub{break-after:avoid}
+.np-flow .ad-a.in-paper,.np-flow .np-tides,.np-flow .np-fig,.np-flow .np-line,.np-flow .np-cl,.np-flow .np-obits li,.np-flow .np-prices li{break-inside:avoid}
+.np-flow .ad-a.in-paper{display:block;margin:0 0 16px}
+.np-flow .np-story{border-bottom:2px solid var(--signal);padding-bottom:12px;margin-bottom:14px}
+.np-flow > section{margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--signal)}
+.np-flow > :last-child{margin-bottom:0;border-bottom:0;padding-bottom:0}
+.np-flow .np-line{margin-bottom:14px}
+.np-flow .np-tides{margin:4px 0 12px;overflow:visible}
+.np-flow .np-tab{font-size:14px;line-height:20px}
+.np-flow .np-tab th,.np-flow .np-tab td{padding:3px 3px}
+.np-round{border-top:4px double var(--signal);margin-top:16px;padding:14px 0 0}
+.np-round > .np-flow{margin-top:10px}
+.np-round .np-fig{margin:0 0 12px}
+.np-round .np-gates{margin:0 0 12px}
+.np-flow .np-stops{margin:0}
+.np-page.p2 > .np-flow{padding-top:14px}
+@media (max-width:959px){.np-title{font-size:72px}.np-flow{columns:2 260px}}
+@media (max-width:620px){.np-flow{columns:1;column-rule:0}}
+/* the station's player: PLAY a stepped triangle, STOP two bars; the meter stands still until the song plays */
+button.rs-play{appearance:none;border:0;padding:0;margin:0;cursor:pointer;display:block;flex:none}
+button.rs-play:focus-visible{outline:2px solid var(--signal);outline-offset:4px}
+.rs-player.playing button.rs-play{clip-path:none;background:linear-gradient(90deg,var(--signal) 0 16px,transparent 16px 32px,var(--signal) 32px 48px)}
+.rs-player.playing button.rs-play:hover{background:linear-gradient(90deg,var(--ichor) 0 16px,transparent 16px 32px,var(--ichor) 32px 48px)}
+button.rs-play:hover{background:var(--signal)}
+.rs-eq i{animation:none !important;transition:height .06s steps(1)}
+.rs-player:not(.playing) .rs-eq i{height:4px}
+.rs-player.playing .rs-on b{animation:none}
+.rs-top{grid-template-areas:"mark word";padding-bottom:18px}
+@media (max-width:560px){.rs-top{grid-template-areas:"mark" "word";padding-bottom:14px}}
+@media (max-width:759px){.lcards > a.at.thin{display:none}}
+.np-flow .np-tides{overflow-x:auto}
+.np-flow .np-tab{table-layout:auto;width:100%}
+.np-flow .np-tab th,.np-flow .np-tab td{padding:3px 2px}
+/* ---- the model: a person with the thing, the pitch beside them, as a print ad sets its model (Dylan, October 4, late) */
+.ad-a:has(.look-model){container-type:inline-size;display:block}
+.look-model{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"pic copy";padding:0;border:2px solid var(--signal);align-items:stretch}
+.look-model > .am-pic{grid-area:pic;align-self:stretch;display:grid;place-items:center;background:var(--void);border-right:2px solid var(--signal)}
+.look-model > .am-pic canvas{display:block;image-rendering:pixelated}
+.look-model .am-copy{grid-area:copy;display:grid;align-content:center;justify-items:start;gap:8px;padding:18px 20px 18px}
+.look-model .ad-tag{justify-self:end;margin:-6px -8px 0 0;grid-area:auto;color:var(--signal)}
+.look-model .ad-brand{grid-area:auto;color:var(--signal);font-size:8px;line-height:12px;letter-spacing:2px}
+.look-model .ad-brand.wmb{line-height:0;--wmh:40px}
+.look-model .ad-head{grid-area:auto;font-size:32px;line-height:34px;color:var(--ichor)}
+.look-model .ad-body{grid-area:auto;font-size:17px;line-height:1.45;max-width:46ch}
+.look-model .ad-fine{grid-area:auto;color:var(--signal)}
+.look-model .ad-cta{grid-area:auto;justify-self:start;margin-top:4px}
+/* the second: the person on the right, the pitch on a field of ICHOR */
+.look-model.mv1{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"copy pic";background:var(--ichor)}
+.look-model.mv1 > .am-pic{border-right:0;border-left:2px solid var(--signal)}
+.look-model.mv1 .am-copy *{color:var(--void)}
+.look-model.mv1 .ad-cta{background:var(--void);color:var(--ichor);box-shadow:4px 4px 0 var(--signal)}
+.look-model.mv1 .ad-tag{color:var(--void)}
+/* the third: the pitch on SIGNAL, its line cut out of a bar of the dark */
+.look-model.mv2{background:var(--signal)}
+.look-model.mv2 .am-copy *{color:var(--void)}
+.look-model.mv2 .ad-head{background:var(--void);color:var(--signal);padding:2px 8px}
+.look-model.mv2 .ad-cta{background:var(--ichor);color:var(--void);box-shadow:4px 4px 0 var(--void)}
+@container (max-width:560px){
+  .look-model,.look-model.mv1{grid-template-columns:minmax(0,1fr);grid-template-areas:"pic" "copy"}
+  .look-model > .am-pic,.look-model.mv1 > .am-pic{border:0;border-bottom:2px solid var(--signal)}
+  .look-model .ad-head{font-size:24px;line-height:28px}
+  .look-model .am-copy{padding:14px 14px 16px}
+}
+.at-ichor .at-brand.wmb,.at-signal .at-brand.wmb{background:var(--void);justify-self:start;padding:3px 5px}
+.look-model.mv1 .ad-brand.wmb,.look-model.mv2 .ad-brand.wmb{background:var(--void);padding:4px 6px}
+.look-model > .am-pic{justify-items:center}
+@container (max-width:560px){.look-model > .am-pic{justify-self:stretch}}
+@container (min-width:900px){.look-model .ad-head{font-size:40px;line-height:42px}}
+button.rs-play.wait{animation:ad-blink .7s steps(1) infinite}
+.rs-main > .ad-a{display:block;margin:4px 0 22px}
+@media (min-width:600px){.rs-deds > li:last-child:nth-child(3n+2){grid-column:span 2}.rs-deds > li:last-child:nth-child(3n+1){grid-column:1 / -1}}
+.rec-t{overflow:hidden;max-width:100%}
