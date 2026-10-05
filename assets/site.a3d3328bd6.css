@@ -2620,3 +2620,7 @@ button.rs-play.wait{animation:ad-blink .7s steps(1) infinite}
 /* a tile's words always lie over its treatment, and the diagonal panel ends where the picture's column ends */
 .at .at-in{position:relative;z-index:1}
 @media (max-width:420px){.at-diag::before{width:86px}}
+
+/* the ads are dealt again as each page loads, each slot from the ads of its own size (Dylan, October 5); until then they
+   hold their place unseen */
+html.adrot a.ad-a[data-adc]:not([data-adx]){visibility:hidden}
