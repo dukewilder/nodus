@@ -2701,6 +2701,7 @@ html.adrot a.ad-a[data-adc]:not([data-adx]){visibility:hidden}
 .doc .q .n{grid-row:span 2;margin:0}
 .doc .q .qq{color:var(--grace)}
 .doc .q .qa{font-style:italic}
+.doc .n.gr{margin:0 0 0 12px}
 .lib-doc.dt .doc-b p{font-family:var(--px);font-size:16px;line-height:24px;-webkit-font-smoothing:none}
 .lib-doc.dt .doc-b{color:var(--grace)}
 @media (max-width:480px){.doc .vr{grid-template-columns:minmax(0,1fr)}.doc .mg{margin-left:0}}
